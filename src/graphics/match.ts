@@ -6,6 +6,14 @@ import { createPinia } from 'pinia';
 import { initActiveRoundStore } from 'browser-shared/stores/ActiveRoundStore';
 import { initCasterStore } from 'browser-shared/stores/CasterStore';
 import { initAssetPathStore } from 'browser-shared/stores/AssetPathStore';
+import Haverbrooke from './assets/fonts/Haverbrooke.otf';
+import HaverbrookeHollow from './assets/fonts/Haverbrooke Hollow.otf';
+import gsap from 'gsap';
+import PixiPlugin from 'gsap/PixiPlugin';
+import * as PIXI from 'pixi.js';
+
+gsap.registerPlugin(PixiPlugin);
+PixiPlugin.registerPIXI(PIXI);
 
 (async () => {
     const app = createApp(MatchGraphic);
@@ -14,9 +22,21 @@ import { initAssetPathStore } from 'browser-shared/stores/AssetPathStore';
         initActiveRoundStore(),
         initCasterStore(),
         initAssetPathStore(),
-        document.fonts.load('800 48px Barlow'),
+        document.fonts.load('800 128px Barlow'),
         document.fonts.load('400 48px Haverbrooke'),
-        document.fonts.load('400 48px Haverbrooke Hollow')
+        document.fonts.load('400 48px Haverbrooke Hollow'),
+        PIXI.Assets.load({
+            src: Haverbrooke,
+            data: {
+                family: 'Haverbrooke'
+            }
+        }),
+        PIXI.Assets.load({
+            src: HaverbrookeHollow,
+            data: {
+                family: 'Haverbrooke Hollow'
+            }
+        })
     ]);
     app.mount('#app');
 })();
