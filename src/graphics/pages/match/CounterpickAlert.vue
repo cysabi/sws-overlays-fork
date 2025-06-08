@@ -47,7 +47,7 @@ onMounted(async () => {
     }
 
     const app = new Application();
-    let ctx: gsap.Context;
+    let ctx: gsap.Context | null = null;
 
     const tickerCallback = (time: number) => {
         app.ticker.update(time);
@@ -56,7 +56,7 @@ onMounted(async () => {
     onUnmounted(() => {
         gsap.ticker.remove(tickerCallback);
         app.destroy();
-        if (ctx) {
+        if (ctx != null) {
             ctx.revert();
         }
     });
