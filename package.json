@@ -1,0 +1,61 @@
+{
+    "name": "sws-overlays",
+    "version": "0.1.0",
+    "description": "Broadcast graphics for the Splat World Series",
+    "author": {
+        "name": "inkfarer",
+        "email": "inkfarer@inkfarer.com",
+        "url": "https://inkfarer.com"
+    },
+    "scripts": {
+        "build:clean": "run-s clean build",
+        "build": "run-p build:browser build:extension",
+        "build:browser": "vite --config vite.config.browser.mjs build",
+        "build:extension": "vite --config vite.config.extension.mts build",
+        "clean": "trash node_modules/.cache && trash dashboard && trash graphics && trash shared && trash extension",
+        "start": "node ../..",
+        "watch": "run-p watch:*",
+        "watch:browser": "vite --config vite.config.browser.mjs",
+        "watch:extension": "vite --config vite.config.extension.ts",
+        "schema-types": "nodecg schema-types"
+    },
+    "nodecg": {
+        "compatibleRange": "^1.7.0 || ^2.0.0",
+        "graphics": [
+            {
+                "file": "match.html",
+                "width": 1920,
+                "height": 1080
+            }
+        ]
+    },
+    "devDependencies": {
+        "@fortawesome/fontawesome-svg-core": "6.7.2",
+        "@fortawesome/free-brands-svg-icons": "6.7.2",
+        "@fortawesome/free-solid-svg-icons": "6.7.2",
+        "@fortawesome/vue-fontawesome": "3.0.8",
+        "@nodecg/types": "2.5.3",
+        "@tourneyview/common": "^0.8.0",
+        "@types/luxon": "3.6.2",
+        "@types/node": "22.15.30",
+        "@vitejs/plugin-vue": "5.2.4",
+        "@vue/compiler-sfc": "3.5.16",
+        "gsap": "3.13.0",
+        "npm-run-all": "4.1.5",
+        "pinia": "2.3.1",
+        "sass": "1.89.1",
+        "trash-cli": "6.0.0",
+        "typescript": "5.8.3",
+        "vite": "5.4.19",
+        "vite-plugin-checker": "0.9.3",
+        "vite-plugin-nodecg": "2.1.0",
+        "vite-tsconfig-paths": "^5.0.1",
+        "vue": "3.5.16",
+        "vue-tsc": "2.2.10"
+    },
+    "dependencies": {
+        "@tourneyview/renderer": "^0.8.1",
+        "luxon": "3.6.1",
+        "pixi.js": "8.10.1"
+    }
+}
