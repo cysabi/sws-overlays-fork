@@ -1,28 +1,27 @@
 <template>
-    <div class="counterpick-alert">
+    <div
+        class="counterpick-alert"
+        ref="root"
+    >
         <canvas
+            v-show="canvasVisible"
             ref="canvas"
             class="max-width max-height"
         />
-        <div
+        <LargeStageDetailDisplay
+            v-if="props.game != null"
             class="underlay"
-            :style="{ opacity: underlayVisible ? 1 : 0 }"
-        >
-            <div
-                class="stage-image"
-                :style="{ backgroundImage: `url('${assetPathStore.getStageImagePath('Inkblot Art Academy')}')` }"
-            />
-            <div class="pick-info-layout">
-                <div class="picker-name">Yaotl Teotl's Pick</div>
-                <div class="picked-stage">Inkblot Art Academy</div>
-            </div>
-        </div>
+            :title="`${activeRoundStore.getTeamName(props.nextPickingTeam, '???')}'s Pick`"
+            :color="props.nextPickingTeam"
+            :style="{ opacity: underlayVisible ? '1' : '0' }"
+            :game="props.game"
+        />
     </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
-import { useAssetPathStore } from 'browser-shared/stores/AssetPathStore';
+import { ActiveRound } from 'schemas';
+import { onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import {
     Application,
     Graphics,
@@ -33,19 +32,26 @@ import {
     Text
 } from 'pixi.js';
 import gsap from 'gsap';
+import LargeStageDetailDisplay from './LargeStageDetailDisplay.vue';
+import { fillLazyTransitionMapMember, initLazyTransitionMapMember } from '../../helpers/TransitionHelper';
+import { useActiveRoundStore } from 'browser-shared/stores/ActiveRoundStore';
 
+const activeRoundStore = useActiveRoundStore();
+
+const root = useTemplateRef('root');
 const canvas = useTemplateRef('canvas');
 
-const assetPathStore = useAssetPathStore();
+const transitions = initLazyTransitionMapMember(root);
 
+const canvasVisible = ref(false);
 const underlayVisible = ref(false);
 
-onMounted(async () => {
-    if (!canvas.value) {
-        console.error('missing canvas context');
-        return;
-    }
+const props = defineProps<{
+    game: ActiveRound['games'][number] | null
+    nextPickingTeam: 'alpha' | 'bravo'
+}>();
 
+onMounted(async () => {
     const app = new Application();
     let ctx: gsap.Context | null = null;
 
@@ -57,13 +63,14 @@ onMounted(async () => {
         gsap.ticker.remove(tickerCallback);
         app.destroy();
         if (ctx != null) {
-            ctx.revert();
+            // ctx.revert();
         }
     });
 
     await app.init({
-        canvas: canvas.value,
-        resizeTo: canvas.value,
+        canvas: canvas.value!,
+        width: 800,
+        height: 150,
         backgroundAlpha: 0
     });
     app.ticker.stop();
@@ -113,11 +120,11 @@ onMounted(async () => {
 
     const background = new Graphics({ width: app.renderer.width, height: app.renderer.height });
     background.rect(0, 0, app.renderer.width, app.renderer.height);
-    background.fill(0xA032DB);
+    background.fill(0xFFFFFF);
     app.stage.addChild(background);
 
     const text = new Text({
-        text: 'YAOTL TEOTL\'S PICK',
+        text: '???\'S PICK',
         style: {
             fill: 0xFFFFFF,
             fontSize: 128,
@@ -135,49 +142,125 @@ onMounted(async () => {
 
     app.stage.addChild(text);
 
-    ctx = gsap.context(() => {
-        const tl = gsap.timeline({ paused: false });
+    watch(() => ({
+        team: props.nextPickingTeam,
+        text: `${activeRoundStore.getTeamName(props.nextPickingTeam, '???').toUpperCase()}'S PICK`
+    }), newValue => {
+        background.tint = newValue.team === 'alpha' ? 0xE0A000 : 0xA032DB;
+        text.text = newValue.text;
+    }, { immediate: true });
 
-        tl
-            .to(particles, {
-                duration: 0.75,
-                ease: 'power2.out',
-                scaleX: 1,
-                scaleY: 1,
-                stagger: {
-                    each: 0.015,
-                    from: 'center',
-                    axis: 'y',
-                    grid: [dotCountX, dotCountY]
-                },
-                onUpdate: () => {
-                    if (app.renderer) {
-                        app.stage.mask = new Sprite(app.renderer.generateTexture({ target: dotGridParticleContainer }));
-                    }
-                },
-                onComplete: () => {
-                    app.stage.mask = null;
-                }
-            }, 'intro')
-            .to(text, {
-                duration: 2,
-                ease: 'none',
-                pixi: {
-                    scaleY: 0.95,
-                    scaleX: text.scale.x + 0.05
-                }
-            }, 'intro')
-            .to(endMask, {
-                duration: 0.5,
-                ease: 'power4.out',
-                pixi: {
-                    scaleX: 0
-                },
+    fillLazyTransitionMapMember(transitions, {
+        enter: () => {
+            const tl = gsap.timeline({
                 onStart: () => {
-                    app.stage.mask = endMask;
-                    underlayVisible.value = true;
+                    canvasVisible.value = true;
+                    underlayVisible.value = false;
+                    gsap.set(particles, { scaleX: 0, scaleY: 0 });
+                    gsap.set(text, { pixi: { scaleY: 0.9, scaleX: text.scale.x - 0.05 } });
+                    gsap.set(endMask, { pixi: { scaleX: 1 } });
+                    text.visible = true;
+                    text.visible = true;
+                    text.scale.y = 0.9;
+                    text.scale.x = 1;
+                    text.width = Math.min(text.width, app.renderer.width * 0.9);
                 }
-            }, '-=0.5');
+            });
+
+            tl
+                .to(particles, {
+                    duration: 0.75,
+                    ease: 'power2.out',
+                    scaleX: 1,
+                    scaleY: 1,
+                    stagger: {
+                        each: 0.015,
+                        from: 'center',
+                        axis: 'y',
+                        grid: [dotCountX, dotCountY]
+                    },
+                    onUpdate: () => {
+                        if (app.renderer) {
+                            app.stage.mask = new Sprite(app.renderer.generateTexture({ target: dotGridParticleContainer }));
+                        }
+                    },
+                    onComplete: () => {
+                        app.stage.mask = null;
+                    }
+                }, 'intro')
+                .to(text, {
+                    duration: 2,
+                    ease: 'none',
+                    pixi: {
+                        scaleY: 0.95,
+                        scaleX: '+=0.05'
+                    }
+                }, 'intro')
+                .to(endMask, {
+                    duration: 0.5,
+                    ease: 'power4.out',
+                    pixi: {
+                        scaleX: 0
+                    },
+                    onStart: () => {
+                        underlayVisible.value = true;
+                        app.stage.mask = endMask;
+                    },
+                    onComplete: () => {
+                        canvasVisible.value = false;
+                        app.stage.mask = null;
+                    }
+                }, '-=0.5');
+
+            return tl;
+        },
+        leave: () => {
+            const tl = gsap.timeline({
+                onStart: () => {
+                    canvasVisible.value = true;
+                    text.visible = false;
+                    gsap.set(particles, { scaleX: 1, scaleY: 1 });
+                }
+            });
+
+            tl
+                .to(endMask, {
+                    duration: 0.5,
+                    ease: 'power4.in',
+                    pixi: {
+                        scaleX: 1
+                    },
+                    onStart: () => {
+                        app.stage.mask = endMask;
+                    },
+                    onComplete: () => {
+                        underlayVisible.value = false;
+                    }
+                })
+                .to(particles, {
+                    duration: 0.75,
+                    ease: 'power2.out',
+                    scaleX: 0,
+                    scaleY: 0,
+                    stagger: {
+                        each: 0.015,
+                        from: 'edges',
+                        axis: 'y',
+                        grid: [dotCountX, dotCountY]
+                    },
+                    onUpdate: () => {
+                        if (app.renderer) {
+                            app.stage.mask = new Sprite(app.renderer.generateTexture({ target: dotGridParticleContainer }));
+                        }
+                    },
+                    onComplete: () => {
+                        canvasVisible.value = false;
+                        app.stage.mask = null;
+                    }
+                });
+
+            return tl;
+        }
     });
 });
 </script>
@@ -185,7 +268,7 @@ onMounted(async () => {
 <style scoped lang="scss">
 .counterpick-alert {
     position: relative;
-    filter: drop-shadow(0 0 5px rgba(34, 34, 34, 0.3));
+    filter: drop-shadow(0 0 3px rgba(34, 34, 34, 0.25));
 }
 
 .counterpick-alert > :deep(canvas) {
@@ -199,37 +282,5 @@ onMounted(async () => {
     width: 100%;
     height: 100%;
     z-index: -1;
-    background: linear-gradient(to bottom, #F0F0F0 0%, #E3E3E3 100%);
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 16px;
-
-    .pick-info-layout {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        color: #333333;
-    }
-
-    .stage-image {
-        aspect-ratio: 16 / 9;
-        height: 100%;
-        background-size: cover;
-        background-repeat: no-repeat;
-    }
-
-    .picker-name {
-        font-family: 'Barlow Condensed';
-        font-weight: 400;
-        font-size: 28px;
-        color: #A032DB;
-        margin-top: 2px;
-    }
-
-    .picked-stage {
-        font-weight: 700;
-        font-size: 55px;
-        margin-top: -10px;
-    }
 }
 </style>

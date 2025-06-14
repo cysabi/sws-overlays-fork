@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 import { deg2rad } from '../../helpers/MathHelper';
-import { onMounted, onUnmounted, useTemplateRef } from 'vue';
+import { onMounted, onUnmounted, useTemplateRef, watch } from 'vue';
 import {
     Application,
     CanvasTextOptions,
@@ -22,8 +22,15 @@ import {
     TilingSprite
 } from 'pixi.js';
 import gsap from 'gsap';
+import { fillLazyTransitionMapMember, initLazyTransitionMapMember } from '../../helpers/TransitionHelper';
 
 const canvas = useTemplateRef('canvas');
+
+const transitions = initLazyTransitionMapMember(canvas);
+
+const props = defineProps<{
+    teamColor: 'alpha' | 'bravo'
+}>();
 
 onMounted(async () => {
     if (!canvas.value) {
@@ -58,7 +65,7 @@ onMounted(async () => {
     const textOptions = (fontFamily: string): CanvasTextOptions => ({
         text: 'COUNTERPICK ',
         style: {
-            fill: 0xA032DB,
+            fill: 0xFFFFFF,
             fontSize: 125,
             fontFamily,
             fontWeight: '400'
@@ -81,21 +88,16 @@ onMounted(async () => {
     const copies = 11;
     for (let i = 0; i < copies; i++) {
         let texture: Texture;
-        let position: PointData;
         let anchor: PointData;
         if (i % 2 === 0) {
             texture = textHollowTexture;
-            position = tiltedTextContainer.toLocal({ y: -100, x: tiltedTextWidth * (i - 1) });
-            position.x -= 1500;
             anchor = { x: 1, y: 0 };
         } else {
             texture = textFilledTexture;
-            position = tiltedTextContainer.toLocal({ y: -100, x: tiltedTextWidth * (i - 1) });
             anchor = { x: 0, y: 0 };
         }
         const tilingSprite = new TilingSprite({
             texture: texture,
-            position,
             height: texture.height,
             width: 2500,
             anchor
@@ -103,6 +105,18 @@ onMounted(async () => {
         (i % 2 === 0 ? hollowSprites : filledSprites).push(tilingSprite);
         tiltedTextContainer.addChild(tilingSprite);
     }
+
+    function calculateTextPositions() {
+        for (let i = 0; i < copies; i++) {
+            const position = tiltedTextContainer.toLocal({ y: -100, x: tiltedTextWidth * (i - 1) });
+            if (i % 2 === 0) {
+                position.x -= 1500;
+            }
+            tiltedTextContainer.children[i].position = position;
+        }
+    }
+
+    calculateTextPositions();
 
     const maskGradient = new FillGradient({
         type: 'linear',
@@ -115,6 +129,59 @@ onMounted(async () => {
         .rect(0, 0, app.renderer.width, app.renderer.height)
         .fill(maskGradient);
     app.stage.mask = new Sprite(app.renderer.generateTexture(maskGraphics));
+
+    watch(() => props.teamColor, newValue => {
+        tiltedTextContainer.tint = newValue === 'alpha' ? 0xFFC22A : 0xA032DB;
+    }, { immediate: true });
+
+    fillLazyTransitionMapMember(transitions, {
+        enter: () => {
+            const tl = gsap.timeline({
+                onStart: () => {
+                    calculateTextPositions();
+                }
+            });
+
+            tl
+                .to(hollowSprites, {
+                    pixi: {
+                        positionX: '+=1500'
+                    },
+                    duration: 2,
+                    ease: 'expo.out'
+                }, 'intro')
+                .to(filledSprites, {
+                    pixi: {
+                        positionX: '-=1500'
+                    },
+                    duration: 2,
+                    ease: 'expo.out'
+                }, 'intro');
+
+            return tl;
+        },
+        leave: () => {
+            const tl = gsap.timeline();
+
+            tl
+                .to(hollowSprites, {
+                    pixi: {
+                        positionX: '+=2500'
+                    },
+                    duration: 3.5,
+                    ease: 'expo.in'
+                }, 'intro')
+                .to(filledSprites, {
+                    pixi: {
+                        positionX: '-=2500'
+                    },
+                    duration: 3.5,
+                    ease: 'expo.in'
+                }, 'intro');
+
+            return tl;
+        }
+    });
 
     ctx = gsap.context(() => {
         gsap.to(hollowSprites, {
@@ -135,24 +202,6 @@ onMounted(async () => {
             ease: 'none',
             duration: 25
         });
-
-        const tl = gsap.timeline();
-
-        tl
-            .to(hollowSprites, {
-                pixi: {
-                    positionX: '+=1500'
-                },
-                duration: 2,
-                ease: 'expo.out'
-            }, 'intro')
-            .to(filledSprites, {
-                pixi: {
-                    positionX: '-=1500'
-                },
-                duration: 2,
-                ease: 'expo.out'
-            }, 'intro');
     });
 });
 </script>

@@ -20,7 +20,34 @@ export const useActiveRoundStore = defineStore('activeRound', {
         scoreboardData: null
     } as unknown as ActiveRoundStore),
     getters: {
-        formattedMatchType: state => `${state.activeRound.match.type === 'BEST_OF' ? 'Best of' : 'Play all'} ${state.activeRound.games.length}`
+        formattedMatchType: state => `${state.activeRound.match.type === 'BEST_OF' ? 'Best of' : 'Play all'} ${state.activeRound.games.length}`,
+        scoreSum: state => state.activeRound.teamA.score + state.activeRound.teamB.score,
+        getTeamName: state => (team: ActiveRound['games'][number]['winner'] | null | undefined, defaultValue: string) => {
+            if (team == null || team === 'none') return defaultValue;
+
+            return team === 'alpha'
+                ? state.activeRound.teamA.name
+                : state.activeRound.teamB.name;
+        },
+        getOpposingTeamName: state => (team: ActiveRound['games'][number]['winner'] | null | undefined, defaultValue: string) => {
+            if (team == null || team === 'none') return defaultValue;
+
+            return team === 'alpha'
+                ? state.activeRound.teamB.name
+                : state.activeRound.teamA.name;
+        },
+        nextPickingTeam: function(state) {
+            if (this.scoreSum === 0 || this.scoreSum === state.activeRound.games.length) return null;
+            const lastWinner = state.activeRound.games[this.scoreSum - 1].winner;
+            switch (lastWinner) {
+                case 'none':
+                    return null;
+                case 'alpha':
+                    return 'bravo';
+                case 'bravo':
+                    return 'alpha';
+            }
+        }
     }
 });
 
