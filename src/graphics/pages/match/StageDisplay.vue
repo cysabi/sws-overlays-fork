@@ -22,9 +22,7 @@
                     {{ props.games[i - 1].winner === 'none' ? 'Counterpick' : `${activeRoundStore.getOpposingTeamName(props.games[i - 1].winner, '???')}'s Pick` }}
                 </template>
             </div>
-            <fitted-content
-                class="title"
-            >
+            <fitted-content class="title">
                 {{ activeRoundStore.getTeamName(game.winner, 'Waiting...') }}
             </fitted-content>
             <div

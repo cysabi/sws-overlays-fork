@@ -39,12 +39,12 @@ const decorationStore = useDecorationStore();
 }
 
 .maze-background-alert {
-    background: linear-gradient(to bottom, transparent 50%, var(--color) 95%);
+    background: linear-gradient(to bottom, transparent 65%, var(--color) 95%);
     transition: opacity 1500ms;
     opacity: 0;
 
     &.visible {
-        opacity: 0.5;
+        opacity: 0.35;
     }
 }
 </style>

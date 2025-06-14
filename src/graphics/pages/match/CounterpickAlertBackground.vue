@@ -128,7 +128,7 @@ const maskGraphics = new Graphics()
 app.stage.mask = new Sprite(app.renderer.generateTexture(maskGraphics));
 
 watch(() => props.teamColor, newValue => {
-    tiltedTextContainer.tint = newValue === 'alpha' ? 0xFFC22A : 0xA032DB;
+    tiltedTextContainer.tint = newValue === 'alpha' ? 0xECCE00 : 0xA032DB;
 }, { immediate: true });
 
 provideTransitionMapMember({

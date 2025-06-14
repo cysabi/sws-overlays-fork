@@ -136,7 +136,8 @@ watch(() => ({
     team: props.nextPickingTeam,
     text: `${activeRoundStore.getTeamName(props.nextPickingTeam, '???').toUpperCase()}'S PICK`
 }), newValue => {
-    background.tint = newValue.team === 'alpha' ? 0xE0A000 : 0xA032DB;
+    background.tint = newValue.team === 'alpha' ? 0xE8D912 : 0xA032DB;
+    text.style.fill = newValue.team === 'alpha' ? 0x222222 : 0xFFFFFF;
     text.text = newValue.text;
 }, { immediate: true });
 
