@@ -1,8 +1,5 @@
 <template>
-    <div
-        class="stage-display"
-        ref="root"
-    >
+    <div class="stage-display">
         <large-stage-detail-display
             v-if="props.games.length === 1"
             title="First Stage"
@@ -42,14 +39,11 @@
 <script setup lang="ts">
 import { ActiveRound } from 'schemas';
 import { useActiveRoundStore } from 'browser-shared/stores/ActiveRoundStore';
-import { computed, getCurrentInstance, useTemplateRef } from 'vue';
 import LargeStageDetailDisplay from './LargeStageDetailDisplay.vue';
 import { useAssetPathStore } from 'browser-shared/stores/AssetPathStore';
 import FittedContent from 'components/FittedContent.vue';
 import gsap from 'gsap';
 import { provideTransitionMapMember } from '../../helpers/TransitionHelper';
-
-const root = useTemplateRef('root');
 
 const activeRoundStore = useActiveRoundStore();
 const assetPathStore = useAssetPathStore();
@@ -60,12 +54,10 @@ const props = defineProps<{
 
 const getStageElems = (elem: HTMLElement) => elem.querySelectorAll('.first-stage-highlight, .small-stage-display');
 
-provideTransitionMapMember(root, {
+provideTransitionMapMember({
     leave: (elem, done) => {
         const tl = gsap.timeline({
-            onComplete: () => {
-                elem.style.opacity = '0';
-            }
+            onComplete: done
         });
 
         tl.to(getStageElems(elem), {
@@ -77,21 +69,13 @@ provideTransitionMapMember(root, {
                 from: 'random'
             }
         });
-
-        return tl;
-    },
-    beforeLeave: (elem) => {
-        gsap.set(getStageElems(elem), { y: 0 });
     },
     beforeEnter: (elem) => {
-
+        gsap.set(getStageElems(elem), { y: 250 });
     },
-    enter: (elem) => {
+    enter: (elem, done) => {
         const tl = gsap.timeline({
-            onStart: () => {
-                gsap.set(getStageElems(elem), { y: 250 });
-                elem.style.opacity = '1';
-            }
+            onComplete: done
         });
 
         tl.to(getStageElems(elem), {
@@ -103,8 +87,6 @@ provideTransitionMapMember(root, {
                 from: 'random'
             }
         });
-
-        return tl;
     }
 });
 </script>

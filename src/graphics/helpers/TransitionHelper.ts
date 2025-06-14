@@ -1,18 +1,17 @@
-import { InjectionKey, provide, inject, Ref, getCurrentInstance } from 'vue';
-import gsap from 'gsap';
+import { InjectionKey, provide, inject, getCurrentInstance } from 'vue';
 
 interface RawTransitions {
     beforeEnter?: (elem: HTMLElement) => void
-    enter?: (elem: HTMLElement, done: gsap.Callback | undefined, ...args: unknown[]) => gsap.core.Timeline
+    enter?: (elem: HTMLElement, done: gsap.Callback, ...args: unknown[]) => void
     beforeLeave?: (elem: HTMLElement) => void
-    leave?: (elem: HTMLElement, done: gsap.Callback | undefined, ...args: unknown[]) => gsap.core.Timeline
+    leave?: (elem: HTMLElement, done: gsap.Callback, ...args: unknown[]) => void
 }
 
 export interface Transitions {
-    beforeEnter: () => void
-    enter: (...args: unknown[]) => gsap.core.Timeline
-    beforeLeave: () => void
-    leave: (...args: unknown[]) => gsap.core.Timeline
+    beforeEnter: (elem: HTMLElement) => void
+    enter: (elem: HTMLElement, done: gsap.Callback, ...args: unknown[]) => void
+    beforeLeave: (elem: HTMLElement) => void
+    leave: (elem: HTMLElement, done: gsap.Callback, ...args: unknown[]) => void
 }
 
 export type TransitionMap = Record<string, Transitions>;
@@ -25,7 +24,7 @@ export function createTransitionMap() {
     return map;
 }
 
-export function provideTransitionMapMember(elementRef: Ref<HTMLElement | null>, transitions: RawTransitions) {
+export function provideTransitionMapMember(transitions: RawTransitions) {
     const key = getCurrentInstance()?.type.__name;
     if (key == null) {
         throw new Error('Could not determine component name');
@@ -37,49 +36,14 @@ export function provideTransitionMapMember(elementRef: Ref<HTMLElement | null>, 
         return;
     }
 
-    injection[key] = normalizeTransitionFunctions(elementRef, transitions);
+    injection[key] = normalizeTransitionFunctions(transitions);
 }
 
-export function initLazyTransitionMapMember(elementRef: Ref<HTMLElement | null>): Transitions {
-    const key = getCurrentInstance()?.type.__name;
-    if (key == null) {
-        throw new Error('Could not determine component name');
-    }
-
-    const injection = inject(TransitionMapInjectionKey);
-    if (injection == null) {
-        throw new Error('no transition map to provide for');
-    }
-
-    const result = normalizeTransitionFunctions(elementRef, {});
-    injection[key] = result;
-    return result;
-}
-
-export function fillLazyTransitionMapMember(initializedTransitions: Transitions, newTransitions: RawTransitions) {
-    Object.entries(newTransitions).filter(([_, value]) => value != null).forEach(([key, value]) => {
-        // @ts-ignore: i don't want to deal with this
-        initializedTransitions[key] = value;
-    });
-}
-
-function normalizeTransitionFunctions(elementRef: Ref<HTMLElement | null>, transitions: RawTransitions): Transitions {
+function normalizeTransitionFunctions(transitions: RawTransitions): Transitions {
     return {
-        beforeEnter: () => {
-            if (!transitions.beforeEnter || !elementRef.value) return;
-            transitions.beforeEnter(elementRef.value);
-        },
-        enter: (...args: unknown[]) => {
-            if (!transitions.enter || !elementRef.value) return gsap.timeline();
-            return transitions.enter(elementRef.value, undefined, ...args);
-        },
-        beforeLeave: () => {
-            if (!transitions.beforeLeave || !elementRef.value) return;
-            transitions.beforeLeave(elementRef.value);
-        },
-        leave: (...args: unknown[]) => {
-            if (!transitions.leave || !elementRef.value) return gsap.timeline();
-            return transitions.leave(elementRef.value, undefined, ...args);
-        }
+        beforeEnter: transitions.beforeEnter ?? (() => {}),
+        enter: transitions.enter ?? ((_, done) => done()),
+        beforeLeave: transitions.beforeLeave ?? (() => { }),
+        leave: transitions.leave ?? ((_, done) => done())
     };
 }
