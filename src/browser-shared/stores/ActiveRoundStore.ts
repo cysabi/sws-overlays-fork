@@ -2,6 +2,7 @@ import { ActiveRound, SwapColorsInternally, ScoreboardData } from 'schemas';
 import { defineStore } from 'pinia';
 import { DASHBOARD_BUNDLE_NAME } from '../constants';
 import { createReplicantStoreInitializer } from '../helpers/StoreHelper';
+import { addDots } from 'browser-shared/helpers/StringHelper';
 
 const activeRound = nodecg.Replicant<ActiveRound>('activeRound', DASHBOARD_BUNDLE_NAME);
 const swapColorsInternally = nodecg.Replicant<SwapColorsInternally>('swapColorsInternally', DASHBOARD_BUNDLE_NAME);
@@ -26,15 +27,15 @@ export const useActiveRoundStore = defineStore('activeRound', {
             if (team == null || team === 'none') return defaultValue;
 
             return team === 'alpha'
-                ? state.activeRound.teamA.name
-                : state.activeRound.teamB.name;
+                ? addDots(state.activeRound.teamA.name)
+                : addDots(state.activeRound.teamB.name);
         },
         getOpposingTeamName: state => (team: ActiveRound['games'][number]['winner'] | null | undefined, defaultValue: string) => {
             if (team == null || team === 'none') return defaultValue;
 
             return team === 'alpha'
-                ? state.activeRound.teamB.name
-                : state.activeRound.teamA.name;
+                ? addDots(state.activeRound.teamB.name)
+                : addDots(state.activeRound.teamA.name);
         },
         nextPickingTeam: function(state) {
             if (this.scoreSum === 0 || this.scoreSum === state.activeRound.games.length) return null;

@@ -26,6 +26,11 @@
                 "file": "match.html",
                 "width": 1920,
                 "height": 1080
+            },
+            {
+                "file": "ticker.html",
+                "width": 1920,
+                "height": 1080
             }
         ]
     },

@@ -14,15 +14,21 @@
             :class="`winner-${game.winner}`"
         >
             <div class="game-index">Game {{ i + 1 }}</div>
-            <div class="subtitle">
+            <fitted-content
+                class="subtitle"
+                align="center"
+            >
                 <template v-if="i === 0 || (game.stage !== 'Counterpick' && game.stage !== 'Unknown Stage')">
                     {{ game.stage }}
                 </template>
                 <template v-else-if="game.stage === 'Counterpick' || game.stage === 'Unknown Stage'">
-                    {{ props.games[i - 1].winner === 'none' ? 'Counterpick' : `${activeRoundStore.getOpposingTeamName(props.games[i - 1].winner, '???')}'s Pick` }}
+                    {{ props.games[i - 1].winner === 'none' ? 'Counterpick' : `${posessive(activeRoundStore.getOpposingTeamName(props.games[i - 1].winner, '???'))} Pick` }}
                 </template>
-            </div>
-            <fitted-content class="title">
+            </fitted-content>
+            <fitted-content
+                class="title"
+                align="center"
+            >
                 {{ activeRoundStore.getTeamName(game.winner, 'Waiting...') }}
             </fitted-content>
             <div
@@ -42,6 +48,7 @@ import { useAssetPathStore } from 'browser-shared/stores/AssetPathStore';
 import FittedContent from 'components/FittedContent.vue';
 import gsap from 'gsap';
 import { provideTransitionMapMember } from '../../helpers/TransitionHelper';
+import { posessive } from 'browser-shared/helpers/StringHelper';
 
 const activeRoundStore = useActiveRoundStore();
 const assetPathStore = useAssetPathStore();
@@ -113,6 +120,7 @@ provideTransitionMapMember({
     justify-content: center;
     position: relative;
     color: #fff;
+    overflow: hidden;
 
     .stage-image {
         position: absolute;
@@ -138,12 +146,13 @@ provideTransitionMapMember({
         font-size: 30px;
         line-height: 35px;
         margin-top: -2px;
-        text-rendering: geometricPrecision;
+        width: 95%;
     }
 
     .title {
         font-size: 45px;
         font-weight: 700;
+        width: 95%;
     }
 
     &.winner-alpha {

@@ -3,7 +3,7 @@
         <iframe
             ref="iframe"
             allow="autoplay;camera;microphone;fullscreen;picture-in-picture;display-capture;midi;geolocation;"
-            :src="src"
+            :src="src ?? undefined"
             width="1280"
             height="720"
             :class="{ loaded }"

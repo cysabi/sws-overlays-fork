@@ -1,4 +1,4 @@
-//@use 'colors.scss';
+@use 'constants';
 @use 'fonts.scss';
 @use '../../browser-shared/styles/layout';
 
@@ -8,7 +8,7 @@
 
 body {
     width: 1920px;
-    height: 1080px;
+    height: 1080px - constants.$bottom-ticker-height;
     overflow: hidden;
     margin: 0;
     image-rendering: -webkit-optimize-contrast;

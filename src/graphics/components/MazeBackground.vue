@@ -17,7 +17,7 @@ const decorationStore = useDecorationStore();
 </script>
 
 <style scoped lang="scss">
-@use '../styles/colors';
+@use '../styles/constants';
 
 .maze-background, .maze-background > * {
     position: absolute;
@@ -28,7 +28,7 @@ const decorationStore = useDecorationStore();
 }
 
 .maze-background {
-    background-color: colors.$background-light;
+    background-color: constants.$background-light;
 }
 
 .maze-background-maze {

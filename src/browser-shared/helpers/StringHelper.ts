@@ -14,3 +14,7 @@ export function addDots(value: string | undefined | null, maxLength = 48): strin
 export function isBlank(value: unknown): boolean {
     return typeof value !== 'string' || value.trim() === '';
 }
+
+export function posessive(value: string): string {
+    return value.endsWith('s') ? `${value}'` : `${value}'s`;
+}

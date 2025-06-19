@@ -1,5 +1,6 @@
 @mixin font-barlow-condensed {
     font-family: 'Barlow Condensed', 'Noto Sans JP', sans-serif;
+    text-rendering: geometricPrecision;
 }
 
 @mixin font-barlow {

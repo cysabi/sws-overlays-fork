@@ -23,10 +23,6 @@
         </transition>
     </div>
 
-    <intermission-scoreboard
-        class="intermission-scoreboard"
-    />
-
     <div class="content-wrapper layout vertical center-horizontal">
         <caster-grid />
     </div>
@@ -56,13 +52,10 @@ import { computed, watch } from 'vue';
 import StageDisplay from './StageDisplay.vue';
 import { createTransitionMap } from '../../helpers/TransitionHelper';
 import { useActiveRoundStore } from 'browser-shared/stores/ActiveRoundStore';
-import IntermissionScoreboard from './IntermissionScoreboard.vue';
 import CasterGrid from './CasterGrid.vue';
-import { useCasterStore } from 'browser-shared/stores/CasterStore';
 import { useDecorationStore } from 'browser-shared/stores/DecorationStore';
 
 const activeRoundStore = useActiveRoundStore();
-const casterStore = useCasterStore();
 const decorationStore = useDecorationStore();
 
 const transitions = createTransitionMap();
@@ -80,22 +73,11 @@ function setBackgroundAlertColor() {
     decorationStore.mazeBackgroundAlertColor = nextPickingTeam.value === 'alpha' ? '#E8D912' : '#A032DB';
 }
 
-watch(() => nextPickingTeam.value, newValue => {
+watch(() => nextPickingTeam.value, () => {
     if (showCounterpickAlert.value) {
         setBackgroundAlertColor();
     }
 }, { immediate: true });
-
-const scoreboardYOffset = computed(() => {
-    switch (Object.keys(casterStore.casters).length) {
-        case 1:
-            return '700px';
-        case 2:
-            return '690px';
-        case 3:
-            return '735px';
-    }
-});
 
 const visibleGames = computed(() => {
     const firstUnfinishedGameIndex = activeRoundStore.activeRound.games.findIndex(game => game.winner === 'none');
@@ -153,13 +135,5 @@ function counterpickAlertBackgroundLeave(elem: HTMLElement, done: gsap.Callback)
     > * {
         position: absolute;
     }
-}
-
-.intermission-scoreboard {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 735px;
-    z-index: 999;
 }
 </style>

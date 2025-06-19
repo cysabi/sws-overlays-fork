@@ -6,7 +6,7 @@
         <LargeStageDetailDisplay
             v-if="props.game != null"
             class="underlay"
-            :title="`${activeRoundStore.getTeamName(props.nextPickingTeam, '???')}'s Pick`"
+            :title="`${posessive(activeRoundStore.getTeamName(props.nextPickingTeam, '???'))} Pick`"
             :color="props.nextPickingTeam"
             :game="props.game"
         />
@@ -29,6 +29,7 @@ import gsap from 'gsap';
 import LargeStageDetailDisplay from './LargeStageDetailDisplay.vue';
 import { provideTransitionMapMember } from '../../helpers/TransitionHelper';
 import { useActiveRoundStore } from 'browser-shared/stores/ActiveRoundStore';
+import { posessive } from 'browser-shared/helpers/StringHelper';
 
 const activeRoundStore = useActiveRoundStore();
 
@@ -134,7 +135,7 @@ app.stage.addChild(text);
 
 watch(() => ({
     team: props.nextPickingTeam,
-    text: `${activeRoundStore.getTeamName(props.nextPickingTeam, '???').toUpperCase()}'S PICK`
+    text: `${posessive(activeRoundStore.getTeamName(props.nextPickingTeam, '???')).toUpperCase()} PICK`
 }), newValue => {
     background.tint = newValue.team === 'alpha' ? 0xE8D912 : 0xA032DB;
     text.style.fill = newValue.team === 'alpha' ? 0x222222 : 0xFFFFFF;

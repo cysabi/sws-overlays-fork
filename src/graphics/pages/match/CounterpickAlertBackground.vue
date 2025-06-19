@@ -217,5 +217,6 @@ ctx = gsap.context(() => {
     height: 30%;
     top: unset;
     bottom: 0;
+    overflow: hidden;
 }
 </style>
