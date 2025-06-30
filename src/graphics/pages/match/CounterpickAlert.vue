@@ -16,20 +16,13 @@
 <script setup lang="ts">
 import { ActiveRound } from 'schemas';
 import { onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
-import {
-    Application,
-    Graphics,
-    Particle,
-    ParticleContainer,
-    Rectangle,
-    Sprite,
-    Text
-} from 'pixi.js';
+import { Application, Graphics, Sprite, Text } from 'pixi.js';
 import gsap from 'gsap';
 import LargeStageDetailDisplay from './LargeStageDetailDisplay.vue';
 import { provideTransitionMapMember } from '../../helpers/TransitionHelper';
 import { useActiveRoundStore } from 'browser-shared/stores/ActiveRoundStore';
 import { posessive } from 'browser-shared/helpers/StringHelper';
+import { DotGridParticleContainer } from 'components/DotGridParticleContainer';
 
 const activeRoundStore = useActiveRoundStore();
 
@@ -69,40 +62,7 @@ app.canvas.classList.add('max-width', 'max-height');
 gsap.ticker.add(tickerCallback);
 
 const dotRadius = 35;
-const dotGraphics = new Graphics({
-    width: dotRadius,
-    height: dotRadius
-});
-dotGraphics.circle(0, 0, dotRadius).fill(0xFFFFFF);
-const dotTexture = app.renderer.generateTexture({ target: dotGraphics });
-
-const dotCountX = Math.ceil(app.renderer.width / dotRadius);
-const dotCountY = Math.ceil(app.renderer.height / dotRadius);
-const dotOffsetX = -((dotCountX * dotRadius - app.renderer.width) / 2) + dotRadius / 2;
-const dotOffsetY = -((dotCountY * dotRadius - app.renderer.height) / 2) + dotRadius / 2;
-const dotGridParticleContainer = new ParticleContainer({
-    dynamicProperties: {
-        vertex: true
-    }
-});
-dotGridParticleContainer.boundsArea = new Rectangle(0, 0, app.renderer.width, app.renderer.height);
-
-const particles: Particle[] = [];
-for (let i = 0; i < dotCountX; i++) {
-    for (let j = 0; j < dotCountY; j++) {
-        const particle = new Particle({
-            texture: dotTexture,
-            x: dotRadius * i + dotOffsetX,
-            y: dotRadius * j + dotOffsetY,
-            scaleX: 0,
-            scaleY: 0,
-            anchorX: 0.5,
-            anchorY: 0.5
-        });
-        dotGridParticleContainer.addParticle(particle);
-        particles.push(particle);
-    }
-}
+const dotGridParticleContainer = new DotGridParticleContainer(app, dotRadius);
 
 const endMask = new Graphics();
 endMask.rect(0, 0, app.renderer.width, app.renderer.height);
@@ -150,7 +110,7 @@ provideTransitionMapMember({
     beforeEnter: (elem) => {
         canvasVisible.value = true;
         setUnderlayOpacity(elem, '0');
-        gsap.set(particles, { scaleX: 0, scaleY: 0 });
+        gsap.set(dotGridParticleContainer.particles, { scaleX: 0, scaleY: 0 });
         gsap.set(text, { pixi: { scaleY: 0.9, scaleX: text.scale.x - 0.05 } });
         gsap.set(endMask, { pixi: { scaleX: 1 } });
         text.visible = true;
@@ -166,7 +126,7 @@ provideTransitionMapMember({
         });
 
         tl
-            .to(particles, {
+            .to(dotGridParticleContainer.particles, {
                 duration: 0.75,
                 ease: 'power2.out',
                 scaleX: 1,
@@ -175,7 +135,7 @@ provideTransitionMapMember({
                     each: 0.015,
                     from: 'center',
                     axis: 'y',
-                    grid: [dotCountX, dotCountY]
+                    grid: dotGridParticleContainer.gridSize
                 },
                 onUpdate: () => {
                     if (app.renderer) {
@@ -212,7 +172,7 @@ provideTransitionMapMember({
             onStart: () => {
                 canvasVisible.value = true;
                 text.visible = false;
-                gsap.set(particles, { scaleX: 1, scaleY: 1 });
+                gsap.set(dotGridParticleContainer.particles, { scaleX: 1, scaleY: 1 });
             }
         });
 
@@ -230,7 +190,7 @@ provideTransitionMapMember({
                     setUnderlayOpacity(elem, '0');
                 }
             })
-            .to(particles, {
+            .to(dotGridParticleContainer.particles, {
                 duration: 0.75,
                 ease: 'power2.out',
                 scaleX: 0,
@@ -239,7 +199,7 @@ provideTransitionMapMember({
                     each: 0.015,
                     from: 'edges',
                     axis: 'y',
-                    grid: [dotCountX, dotCountY]
+                    grid: dotGridParticleContainer.gridSize
                 },
                 onUpdate: () => {
                     if (app.renderer) {
