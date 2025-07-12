@@ -24,12 +24,7 @@
                 >
                     {{ breakScreenStore.mainFlavorText }}
                 </div>
-                <div
-                    v-else
-                    class="timer"
-                >
-                    {{ nextRoundTimerText }}
-                </div>
+                <next-round-timer v-else />
             </transition>
         </div>
     </div>
@@ -39,9 +34,9 @@
 import EventLogo from 'components/EventLogo.vue';
 import { useBreakScreenStore } from 'browser-shared/stores/BreakScreenStore';
 import { useTournamentDataStore } from 'browser-shared/stores/TournamentDataStore';
-import { computed, onMounted, ref, useTemplateRef } from 'vue';
+import { computed, onMounted, useTemplateRef } from 'vue';
 import gsap from 'gsap';
-import { DateTime } from 'luxon';
+import NextRoundTimer from 'components/NextRoundTimer.vue';
 
 const breakScreenStore = useBreakScreenStore();
 const tournamentDataStore = useTournamentDataStore();
@@ -52,15 +47,8 @@ const flavorTextAttributes = computed(() => breakScreenStore.mainFlavorText.leng
 
 const resizableContentWrapper = useTemplateRef('resizableContentWrapper');
 
-const parsedNextRoundTime = computed(() => DateTime.fromISO(breakScreenStore.nextRoundStartTime.startTime));
-const nextRoundTimerText = ref('00:00');
-
 onMounted(() => {
     gsap.set(resizableContentWrapper.value, { height: resizableContentWrapper.value!.firstElementChild?.getBoundingClientRect().height });
-
-    setInterval(() => {
-        nextRoundTimerText.value = parsedNextRoundTime.value.diffNow().toFormat('mm:ss');
-    }, 100);
 });
 
 function beforeResizableContentEnter(elem: HTMLElement) {
@@ -119,10 +107,7 @@ body {
     }
 
     .timer {
-        @include font-mixins.font-haverbrooke;
-        font-variant-numeric: tabular-nums;
         font-size: 140px;
-        text-align: center;
     }
 
     .resizable-content-wrapper {
