@@ -25,13 +25,15 @@
             </div>
             <div class="caster-details">
                 <div class="caster-name">
-                    {{ caster.name }} <span class="caster-pronouns">{{ caster.pronouns }}</span>
+                    {{ caster.name }}
                 </div>
                 <div class="caster-social">
+                    <span class="caster-pronouns">{{ caster.pronouns }}</span>
                     <font-awesome-icon
-                        :icon="['fab', caster.twitter.includes('.') ? 'bluesky' : 'twitter']"
+                        :icon="['fab', isBluesky(caster.twitter) ? 'bluesky' : 'twitter']"
+                        class="icon"
                     />
-                    {{ caster.twitter }}
+                    <formatted-caster-social :social="caster.twitter" />
                 </div>
             </div>
         </div>
@@ -49,6 +51,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons/faTwitter';
 import { faBluesky } from '@fortawesome/free-brands-svg-icons/faBluesky';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { isBluesky } from '../../helpers/SocialHelper';
+import FormattedCasterSocial from 'components/FormattedCasterSocial.vue';
 
 library.add(faTwitter, faBluesky);
 
@@ -65,6 +69,7 @@ const visualHeight = computed(() => props.width * (9 / 16));
 
 <style scoped lang="scss">
 @use '../../styles/font-mixins';
+@use '../../styles/constants';
 
 .caster-display-wrapper {
     padding: 24px;
@@ -76,35 +81,39 @@ const visualHeight = computed(() => props.width * (9 / 16));
 }
 
 .caster-details {
-    padding: 0 16px 10px 16px;
     box-sizing: border-box;
     position: absolute;
     bottom: -15px;
-    left: -10px;
+    right: -10px;
     overflow: hidden;
     background-color: #222;
     width: max-content;
     color: white;
-
-    > .background {
-        position: absolute;
-        z-index: -1;
-        width: 100%;
-        height: 100%;
-        //background: radial-gradient(ellipse 100% 120% at 25px 25px, color.change(constants.$background, $alpha: 0.8) 50%, transparent 100%);
-    }
+    min-width: 300px;
 }
 
 .caster-name {
-    font-weight: 700;
+    @include font-mixins.font-anton;
+    text-transform: uppercase;
     font-size: 45px;
+    line-height: 55px;
+    background: constants.$accent-gradient;
+    padding: 2px 16px 0;
+    text-align: center;
 }
 
 .caster-social {
     @include font-mixins.font-barlow-condensed;
-    font-size: 30px;
+    font-size: 25px;
     font-weight: 400;
     margin-top: -3px;
+    padding: 4px 16px 4px 16px;
+    text-align: center;
+
+    .icon {
+        transform: translateY(1px);
+        margin-right: 4px;
+    }
 }
 
 .caster-pronouns {
@@ -112,12 +121,14 @@ const visualHeight = computed(() => props.width * (9 / 16));
     font-weight: 500;
     text-transform: uppercase;
     font-size: 20px;
-    background-color: #0073E6;
-    color: white;
-    padding: 0 6px 1px 6px;
+    line-height: 20px;
+    background-color: #fff;
     display: inline-block;
-    transform: translateY(-3px);
-    margin-left: 2px;
+    transform: translateY(-1px);
+    color: #111;
+    padding: 0 4px 1px 4px;
+    margin-top: 4px;
+    margin-right: 8px;
 }
 
 .caster-visual {
