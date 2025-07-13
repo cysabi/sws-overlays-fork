@@ -11,10 +11,10 @@ import { useBreakScreenStore } from 'browser-shared/stores/BreakScreenStore';
 
 const breakScreenStore = useBreakScreenStore();
 
-const parsedNextRoundTimeDiff = computed(() => DateTime.fromISO(breakScreenStore.nextRoundStartTime.startTime).diffNow());
+const parsedNextRoundTimeDiff = computed(() => DateTime.fromISO(breakScreenStore.nextRoundStartTime.startTime));
 
 function getNextRoundTimerText() {
-    const diffNow = parsedNextRoundTimeDiff.value;
+    const diffNow = parsedNextRoundTimeDiff.value.diffNow();
     if (diffNow.toMillis() <= 0) {
         return '00:00';
     }
