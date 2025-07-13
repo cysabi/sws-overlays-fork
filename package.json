@@ -36,6 +36,11 @@
                 "file": "waiting.html",
                 "width": 1920,
                 "height": 1080
+            },
+            {
+                "file": "bracket.html",
+                "width": 1920,
+                "height": 1080
             }
         ]
     },
@@ -46,6 +51,7 @@
         "@fortawesome/vue-fontawesome": "3.0.8",
         "@nodecg/types": "2.5.3",
         "@tourneyview/common": "^0.8.0",
+        "@types/d3": "^7.4.3",
         "@types/luxon": "3.6.2",
         "@types/node": "22.15.30",
         "@vitejs/plugin-vue": "5.2.4",
@@ -65,6 +71,7 @@
     },
     "dependencies": {
         "@tourneyview/renderer": "^0.8.1",
+        "d3": "^7.9.0",
         "luxon": "3.6.1",
         "pixi.js": "8.10.1"
     }
