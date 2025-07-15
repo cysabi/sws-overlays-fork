@@ -82,6 +82,14 @@ watch(() => nextPickingTeam.value, () => {
 const visibleGames = computed(() => {
     const firstUnfinishedGameIndex = activeRoundStore.activeRound.games.findIndex(game => game.winner === 'none');
 
+    if (activeRoundStore.activeRound.match.isCompleted) {
+        return {
+            games: firstUnfinishedGameIndex === -1
+                ? activeRoundStore.activeRound.games
+                : activeRoundStore.activeRound.games.slice(0, firstUnfinishedGameIndex)
+        };
+    }
+
     return {
         games: firstUnfinishedGameIndex === -1
             ? activeRoundStore.activeRound.games
@@ -95,7 +103,6 @@ function beforeStagesEnter(elem: HTMLElement) {
     } else {
         transitions.StageDisplay.beforeEnter(elem);
     }
-
 }
 
 function stagesEnter(elem: HTMLElement, done: gsap.Callback) {

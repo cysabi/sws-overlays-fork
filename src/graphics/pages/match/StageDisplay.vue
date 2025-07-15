@@ -7,36 +7,38 @@
             color="neutral"
             class="first-stage-highlight"
         />
-        <div
-            v-else
-            v-for="(game, i) in props.games"
-            class="small-stage-display"
-            :class="`winner-${game.winner}`"
-        >
-            <div class="game-index">Game {{ i + 1 }}</div>
-            <fitted-content
-                class="subtitle"
-                align="center"
-            >
-                <template v-if="i === 0 || (game.stage !== 'Counterpick' && game.stage !== 'Unknown Stage')">
-                    {{ game.stage }}
-                </template>
-                <template v-else-if="game.stage === 'Counterpick' || game.stage === 'Unknown Stage'">
-                    {{ props.games[i - 1].winner === 'none' ? 'Counterpick' : `${posessive(activeRoundStore.getOpposingTeamName(props.games[i - 1].winner, '???'))} Pick` }}
-                </template>
-            </fitted-content>
-            <fitted-content
-                class="title"
-                align="center"
-            >
-                {{ activeRoundStore.getTeamName(game.winner, 'Waiting...') }}
-            </fitted-content>
+        <template v-else>
             <div
-                v-if="game.stage !== 'Counterpick' && game.stage !== 'Unknown Stage'"
-                class="stage-image"
-                :style="{ backgroundImage: `url('${assetPathStore.getStageImagePath(game.stage)}')` }"
-            />
-        </div>
+                v-for="(game, i) in props.games"
+                class="small-stage-display"
+                :class="`winner-${game.winner}`"
+                :key="`game-${i}-${game.winner}-${game.stage}-${game.mode}`"
+            >
+                <div class="game-index">Game {{ i + 1 }}</div>
+                <fitted-content
+                    class="subtitle"
+                    align="center"
+                >
+                    <template v-if="i === 0 || (game.stage !== 'Counterpick' && game.stage !== 'Unknown Stage')">
+                        {{ game.stage }}
+                    </template>
+                    <template v-else-if="game.stage === 'Counterpick' || game.stage === 'Unknown Stage'">
+                        {{ props.games[i - 1].winner === 'none' ? 'Counterpick' : `${posessive(activeRoundStore.getOpposingTeamName(props.games[i - 1].winner, '???'))} Pick` }}
+                    </template>
+                </fitted-content>
+                <fitted-content
+                    class="title"
+                    align="center"
+                >
+                    {{ activeRoundStore.getTeamName(game.winner, 'Waiting...') }}
+                </fitted-content>
+                <div
+                    v-if="game.stage !== 'Counterpick' && game.stage !== 'Unknown Stage'"
+                    class="stage-image"
+                    :style="{ backgroundImage: `url('${assetPathStore.getStageImagePath(game.stage)}')` }"
+                />
+            </div>
+        </template>
     </div>
 </template>
 
@@ -49,6 +51,7 @@ import FittedContent from 'components/FittedContent.vue';
 import gsap from 'gsap';
 import { provideTransitionMapMember } from '../../helpers/TransitionHelper';
 import { posessive } from 'browser-shared/helpers/StringHelper';
+import { watch } from 'vue';
 
 const activeRoundStore = useActiveRoundStore();
 const assetPathStore = useAssetPathStore();
@@ -56,6 +59,10 @@ const assetPathStore = useAssetPathStore();
 const props = defineProps<{
     games: ActiveRound['games']
 }>();
+
+watch(() => props.games, newValue => {
+    console.log('?', newValue.map(el => ({ ...el })));
+}, { immediate: true });
 
 const getStageElems = (elem: HTMLElement) => elem.querySelectorAll('.first-stage-highlight, .small-stage-display');
 
