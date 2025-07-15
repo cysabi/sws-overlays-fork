@@ -1,4 +1,4 @@
-import { InjectionKey, provide, inject, getCurrentInstance } from 'vue';
+import { getCurrentInstance, inject, InjectionKey, nextTick, onBeforeMount, provide } from 'vue';
 
 interface RawTransitions {
     beforeEnter?: (elem: HTMLElement) => void
@@ -24,8 +24,8 @@ export function createTransitionMap() {
     return map;
 }
 
-export function provideTransitionMapMember(transitions: RawTransitions) {
-    const key = getCurrentInstance()?.type.__name;
+export function provideTransitionMapMember(transitions: RawTransitions, key?: string) {
+    key = key ?? getCurrentInstance()?.type.__name;
     if (key == null) {
         throw new Error('Could not determine component name');
     }
@@ -36,7 +36,18 @@ export function provideTransitionMapMember(transitions: RawTransitions) {
         return;
     }
 
-    injection[key] = normalizeTransitionFunctions(transitions);
+    if (injection[key] == null) {
+        injection[key] = normalizeTransitionFunctions(transitions);
+    } else {
+        // this looks kind of nonsensical, but this was the easiest way i could find to get the injection to be updated
+        // after the leave transition finishes and before the enter transition starts, with both sync and async
+        // components (using suspense)
+        onBeforeMount(() => {
+            nextTick(() => {
+                injection[key] = normalizeTransitionFunctions(transitions);
+            });
+        });
+    }
 }
 
 function normalizeTransitionFunctions(transitions: RawTransitions): Transitions {

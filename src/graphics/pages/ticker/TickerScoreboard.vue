@@ -2,33 +2,31 @@
     <div class="ticker-scoreboard">
         <div class="team team-alpha">
             <fitted-content class="team-name" align="right">
-                {{ addDots(activeRoundStore.activeRound.teamA.name) }}
+                <opacity-swap-transition>
+                    <div :key="activeRoundStore.activeRound.teamA.name">{{ addDots(activeRoundStore.activeRound.teamA.name) }}</div>
+                </opacity-swap-transition>
             </fitted-content>
-            <div class="team-score">{{ activeRoundStore.activeRound.teamA.score }}</div>
+            <div class="team-score">
+                <score-counter :value="activeRoundStore.activeRound.teamA.score" />
+            </div>
             <image-loader
                 v-if="activeRoundStore.activeRound.teamA.showLogo"
                 class="team-image team-image-blend"
-                :src="activeRoundStore.activeRound.teamA.logoUrl"
-            />
-            <image-loader
-                v-if="activeRoundStore.activeRound.teamA.showLogo"
-                class="team-image team-image-color"
                 :src="activeRoundStore.activeRound.teamA.logoUrl"
             />
         </div>
         <div class="team team-bravo">
             <fitted-content class="team-name" align="right">
-                {{ addDots(activeRoundStore.activeRound.teamB.name) }}
+                <opacity-swap-transition>
+                    <div :key="activeRoundStore.activeRound.teamB.name">{{ addDots(activeRoundStore.activeRound.teamB.name) }}</div>
+                </opacity-swap-transition>
             </fitted-content>
-            <div class="team-score">{{ activeRoundStore.activeRound.teamB.score }}</div>
+            <div class="team-score">
+                <score-counter :value="activeRoundStore.activeRound.teamB.score" />
+            </div>
             <image-loader
                 v-if="activeRoundStore.activeRound.teamB.showLogo"
                 class="team-image team-image-blend"
-                :src="activeRoundStore.activeRound.teamB.logoUrl"
-            />
-            <image-loader
-                v-if="activeRoundStore.activeRound.teamB.showLogo"
-                class="team-image team-image-color"
                 :src="activeRoundStore.activeRound.teamB.logoUrl"
             />
         </div>
@@ -38,7 +36,11 @@
                 {{ tournamentDataStore.tournamentData.meta.shortName ?? tournamentDataStore.tournamentData.meta.name ?? 'Splat World Series' }}
             </fitted-content>
             <fitted-content>
-                {{ activeRoundStore.activeRound.match.name }} - {{ activeRoundStore.formattedMatchType }}
+                <opacity-swap-transition>
+                    <div :key="activeRoundStore.activeRound.match.name">
+                        {{ activeRoundStore.activeRound.match.name }} - {{ activeRoundStore.formattedMatchType }}
+                    </div>
+                </opacity-swap-transition>
             </fitted-content>
         </div>
         <div class="organizer-logos">
@@ -55,6 +57,8 @@ import { useActiveRoundStore } from 'browser-shared/stores/ActiveRoundStore';
 import { addDots } from 'browser-shared/helpers/StringHelper';
 import { useTournamentDataStore } from 'browser-shared/stores/TournamentDataStore';
 import ImageLoader from 'components/ImageLoader.vue';
+import OpacitySwapTransition from 'components/OpacitySwapTransition.vue';
+import ScoreCounter from 'components/ScoreCounter.vue';
 
 const activeRoundStore = useActiveRoundStore();
 const tournamentDataStore = useTournamentDataStore();
@@ -132,6 +136,7 @@ const tournamentDataStore = useTournamentDataStore();
     height: calc(100% - 6px);
     width: 55px;
     text-align: center;
+    overflow: hidden;
 }
 
 .team-name {

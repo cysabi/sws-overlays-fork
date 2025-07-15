@@ -214,8 +214,8 @@ ctx = gsap.context(() => {
 <style scoped lang="scss">
 .counterpick-alert-background {
     width: 100%;
-    height: 30%;
-    top: unset;
+    height: 30% !important;
+    top: unset !important;
     bottom: 0;
     overflow: hidden;
 }

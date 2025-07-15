@@ -51,7 +51,8 @@ import FittedContent from 'components/FittedContent.vue';
 import gsap from 'gsap';
 import { provideTransitionMapMember } from '../../helpers/TransitionHelper';
 import { posessive } from 'browser-shared/helpers/StringHelper';
-import { watch } from 'vue';
+
+// await new Promise<void>(resolve => { resolve(); });
 
 const activeRoundStore = useActiveRoundStore();
 const assetPathStore = useAssetPathStore();
@@ -59,10 +60,6 @@ const assetPathStore = useAssetPathStore();
 const props = defineProps<{
     games: ActiveRound['games']
 }>();
-
-watch(() => props.games, newValue => {
-    console.log('?', newValue.map(el => ({ ...el })));
-}, { immediate: true });
 
 const getStageElems = (elem: HTMLElement) => elem.querySelectorAll('.first-stage-highlight, .small-stage-display');
 
@@ -100,7 +97,7 @@ provideTransitionMapMember({
             }
         });
     }
-});
+}, 'BottomStageDisplay');
 </script>
 
 <style scoped lang="scss">

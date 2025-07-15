@@ -3,8 +3,10 @@
         <transition
             mode="out-in"
             :css="false"
+            appear
             @before-enter="beforeStagesEnter"
             @enter="stagesEnter"
+            @beforeLeave="beforeStagesLeave"
             @leave="stagesLeave"
         >
             <suspense>
@@ -16,6 +18,7 @@
                 />
                 <stage-display
                     v-else
+                    :key="visibleGames.matchId"
                     style="height: 150px"
                     :games="visibleGames.games"
                 />
@@ -84,6 +87,7 @@ const visibleGames = computed(() => {
 
     if (activeRoundStore.activeRound.match.isCompleted) {
         return {
+            matchId: activeRoundStore.activeRound.match.id,
             games: firstUnfinishedGameIndex === -1
                 ? activeRoundStore.activeRound.games
                 : activeRoundStore.activeRound.games.slice(0, firstUnfinishedGameIndex)
@@ -91,6 +95,7 @@ const visibleGames = computed(() => {
     }
 
     return {
+        matchId: activeRoundStore.activeRound.match.id,
         games: firstUnfinishedGameIndex === -1
             ? activeRoundStore.activeRound.games
             : activeRoundStore.activeRound.games.slice(0, firstUnfinishedGameIndex + 1)
@@ -98,30 +103,41 @@ const visibleGames = computed(() => {
 });
 
 function beforeStagesEnter(elem: HTMLElement) {
-    if (showCounterpickAlert.value) {
-        transitions.CounterpickAlert.beforeEnter(elem);
-    } else {
-        transitions.StageDisplay.beforeEnter(elem);
-    }
+    console.log('beforestagesener');
+    // if (showCounterpickAlert.value) {
+    //     transitions.CounterpickAlert.beforeEnter(elem);
+    // } else {
+    //     transitions.StageDisplay.beforeEnter(elem);
+        transitions.BottomStageDisplay.beforeEnter(elem);
+    // }
 }
 
 function stagesEnter(elem: HTMLElement, done: gsap.Callback) {
+    console.log('stagesenter');
+    decorationStore.mazeBackgroundAlert = showCounterpickAlert.value;
     if (showCounterpickAlert.value) {
         setBackgroundAlertColor();
-        decorationStore.mazeBackgroundAlert = true;
-        transitions.CounterpickAlert.enter(elem, done);
-    } else {
-        decorationStore.mazeBackgroundAlert = false;
-        transitions.StageDisplay.enter(elem, done);
     }
+    // if (showCounterpickAlert.value) {
+    //     transitions.CounterpickAlert.enter(elem, done);
+    // } else {
+    //     transitions.StageDisplay.enter(elem, done);
+        transitions.BottomStageDisplay.enter(elem, done);
+    // }
+}
+
+function beforeStagesLeave(elem: HTMLElement) {
+    console.log('beforestagesleave');
 }
 
 function stagesLeave(elem: HTMLElement, done: gsap.Callback) {
-    if (showCounterpickAlert.value) {
-        transitions.StageDisplay.leave(elem, done);
-    } else {
-        transitions.CounterpickAlert.leave(elem, done);
-    }
+    // @ts-ignore
+    console.log('stagesleave', elem['__TRANSITION_FUNCTIONS']);
+    // if (showCounterpickAlert.value) {
+    //     transitions.StageDisplay.leave(elem, done);
+    // } else {
+        transitions.BottomStageDisplay.leave(elem, done);
+    // }
 }
 
 function counterpickAlertBackgroundEnter(elem: HTMLElement, done: gsap.Callback) {

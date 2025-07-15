@@ -212,7 +212,7 @@ provideTransitionMapMember({
                 }
             });
     }
-});
+}, 'BottomStageDisplay');
 </script>
 
 <style scoped lang="scss">
