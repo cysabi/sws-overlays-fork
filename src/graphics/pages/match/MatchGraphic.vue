@@ -6,7 +6,6 @@
             appear
             @before-enter="beforeStagesEnter"
             @enter="stagesEnter"
-            @beforeLeave="beforeStagesLeave"
             @leave="stagesLeave"
         >
             <suspense>
@@ -103,41 +102,19 @@ const visibleGames = computed(() => {
 });
 
 function beforeStagesEnter(elem: HTMLElement) {
-    console.log('beforestagesener');
-    // if (showCounterpickAlert.value) {
-    //     transitions.CounterpickAlert.beforeEnter(elem);
-    // } else {
-    //     transitions.StageDisplay.beforeEnter(elem);
-        transitions.BottomStageDisplay.beforeEnter(elem);
-    // }
+    transitions.BottomStageDisplay.beforeEnter(elem);
 }
 
 function stagesEnter(elem: HTMLElement, done: gsap.Callback) {
-    console.log('stagesenter');
     decorationStore.mazeBackgroundAlert = showCounterpickAlert.value;
     if (showCounterpickAlert.value) {
         setBackgroundAlertColor();
     }
-    // if (showCounterpickAlert.value) {
-    //     transitions.CounterpickAlert.enter(elem, done);
-    // } else {
-    //     transitions.StageDisplay.enter(elem, done);
-        transitions.BottomStageDisplay.enter(elem, done);
-    // }
-}
-
-function beforeStagesLeave(elem: HTMLElement) {
-    console.log('beforestagesleave');
+    transitions.BottomStageDisplay.enter(elem, done);
 }
 
 function stagesLeave(elem: HTMLElement, done: gsap.Callback) {
-    // @ts-ignore
-    console.log('stagesleave', elem['__TRANSITION_FUNCTIONS']);
-    // if (showCounterpickAlert.value) {
-    //     transitions.StageDisplay.leave(elem, done);
-    // } else {
-        transitions.BottomStageDisplay.leave(elem, done);
-    // }
+    transitions.BottomStageDisplay.leave(elem, done);
 }
 
 function counterpickAlertBackgroundEnter(elem: HTMLElement, done: gsap.Callback) {

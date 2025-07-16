@@ -1,6 +1,6 @@
 import { getCurrentInstance, inject, InjectionKey, nextTick, onBeforeMount, provide } from 'vue';
 
-interface RawTransitions {
+export interface RawTransitions {
     beforeEnter?: (elem: HTMLElement) => void
     enter?: (elem: HTMLElement, done: gsap.Callback, ...args: unknown[]) => void
     beforeLeave?: (elem: HTMLElement) => void
@@ -35,6 +35,8 @@ export function provideTransitionMapMember(transitions: RawTransitions, key?: st
         console.warn('no transition map to provide for');
         return;
     }
+
+    // TODO: in overlays, if 1st stage in round is unknown/counterpick, add dropdown to select that stage in begin-next-match dialog
 
     if (injection[key] == null) {
         injection[key] = normalizeTransitionFunctions(transitions);

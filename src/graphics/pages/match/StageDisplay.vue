@@ -1,44 +1,56 @@
 <template>
     <div class="stage-display">
-        <large-stage-detail-display
-            v-if="props.games.length === 1"
-            title="First Stage"
-            :game="props.games[0]"
-            color="neutral"
-            class="first-stage-highlight"
-        />
-        <template v-else>
+        <transition
+            mode="out-in"
+            :css="false"
+            appear
+            @before-enter="transitions.beforeEnter"
+            @enter="transitions.enter"
+            @leave="transitions.leave"
+        >
+            <large-stage-detail-display
+                v-if="props.games.length === 1"
+                title="First Stage"
+                :game="props.games[0]"
+                color="neutral"
+                class="first-stage-highlight"
+            />
             <div
-                v-for="(game, i) in props.games"
-                class="small-stage-display"
-                :class="`winner-${game.winner}`"
-                :key="`game-${i}-${game.winner}-${game.stage}-${game.mode}`"
+                v-else
+                class="small-stages-wrapper"
             >
-                <div class="game-index">Game {{ i + 1 }}</div>
-                <fitted-content
-                    class="subtitle"
-                    align="center"
-                >
-                    <template v-if="i === 0 || (game.stage !== 'Counterpick' && game.stage !== 'Unknown Stage')">
-                        {{ game.stage }}
-                    </template>
-                    <template v-else-if="game.stage === 'Counterpick' || game.stage === 'Unknown Stage'">
-                        {{ props.games[i - 1].winner === 'none' ? 'Counterpick' : `${posessive(activeRoundStore.getOpposingTeamName(props.games[i - 1].winner, '???'))} Pick` }}
-                    </template>
-                </fitted-content>
-                <fitted-content
-                    class="title"
-                    align="center"
-                >
-                    {{ activeRoundStore.getTeamName(game.winner, 'Waiting...') }}
-                </fitted-content>
                 <div
-                    v-if="game.stage !== 'Counterpick' && game.stage !== 'Unknown Stage'"
-                    class="stage-image"
-                    :style="{ backgroundImage: `url('${assetPathStore.getStageImagePath(game.stage)}')` }"
-                />
+                    v-for="(game, i) in props.games"
+                    class="small-stage-display"
+                    :class="`winner-${game.winner}`"
+                    :key="`game-${i}-${game.winner}-${game.stage}-${game.mode}`"
+                >
+                    <div class="game-index">Game {{ i + 1 }}</div>
+                    <fitted-content
+                        class="subtitle"
+                        align="center"
+                    >
+                        <template v-if="i === 0 || (game.stage !== 'Counterpick' && game.stage !== 'Unknown Stage')">
+                            {{ game.stage }}
+                        </template>
+                        <template v-else-if="game.stage === 'Counterpick' || game.stage === 'Unknown Stage'">
+                            {{ props.games[i - 1].winner === 'none' ? 'Counterpick' : `${posessive(activeRoundStore.getOpposingTeamName(props.games[i - 1].winner, '???'))} Pick` }}
+                        </template>
+                    </fitted-content>
+                    <fitted-content
+                        class="title"
+                        align="center"
+                    >
+                        {{ activeRoundStore.getTeamName(game.winner, 'Waiting...') }}
+                    </fitted-content>
+                    <div
+                        v-if="game.stage !== 'Counterpick' && game.stage !== 'Unknown Stage'"
+                        class="stage-image"
+                        :style="{ backgroundImage: `url('${assetPathStore.getStageImagePath(game.stage)}')` }"
+                    />
+                </div>
             </div>
-        </template>
+        </transition>
     </div>
 </template>
 
@@ -49,10 +61,8 @@ import LargeStageDetailDisplay from './LargeStageDetailDisplay.vue';
 import { useAssetPathStore } from 'browser-shared/stores/AssetPathStore';
 import FittedContent from 'components/FittedContent.vue';
 import gsap from 'gsap';
-import { provideTransitionMapMember } from '../../helpers/TransitionHelper';
+import { provideTransitionMapMember, RawTransitions } from '../../helpers/TransitionHelper';
 import { posessive } from 'browser-shared/helpers/StringHelper';
-
-// await new Promise<void>(resolve => { resolve(); });
 
 const activeRoundStore = useActiveRoundStore();
 const assetPathStore = useAssetPathStore();
@@ -61,9 +71,11 @@ const props = defineProps<{
     games: ActiveRound['games']
 }>();
 
-const getStageElems = (elem: HTMLElement) => elem.querySelectorAll('.first-stage-highlight, .small-stage-display');
+const getStageElems = (elem: HTMLElement) => {
+    return elem.classList.contains('first-stage-highlight') ? elem : elem.querySelectorAll('.first-stage-highlight, .small-stage-display');
+};
 
-provideTransitionMapMember({
+const transitions: RawTransitions = {
     leave: (elem, done) => {
         const tl = gsap.timeline({
             onComplete: done
@@ -97,7 +109,8 @@ provideTransitionMapMember({
             }
         });
     }
-}, 'BottomStageDisplay');
+};
+provideTransitionMapMember(transitions, 'BottomStageDisplay');
 </script>
 
 <style scoped lang="scss">
@@ -179,5 +192,9 @@ provideTransitionMapMember({
     &.winner-none {
         background: linear-gradient(to bottom, #353535 0%, #282828 100%);
     }
+}
+
+.small-stages-wrapper {
+    display: contents;
 }
 </style>
