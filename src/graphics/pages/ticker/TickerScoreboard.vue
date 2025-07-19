@@ -205,7 +205,6 @@ $width-change-transition-ease: cubic-bezier(0.76, 0, 0.24, 1);
     overflow: hidden;
     color: white;
     display: grid;
-    //flex-direction: column;
     grid-template-columns: 120px 1fr;
     grid-template-rows: repeat(2, 1fr);
     justify-content: center;
