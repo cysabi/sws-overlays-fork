@@ -69,7 +69,7 @@ const breakScreenStore = useBreakScreenStore();
 const transitions = createTransitionMap();
 
 const nextGame = computed(() => activeRoundStore.activeRound.games[activeRoundStore.scoreSum]);
-const showCounterpickAlert = computed(() => activeRoundStore.scoreSum !== 0 && nextGame.value != null && nextGame.value.stage !== 'Counterpick' && nextGame.value.stage !== 'Unknown Stage');
+const showCounterpickAlert = computed(() => activeRoundStore.scoreSum !== 0 && nextGame.value != null && nextGame.value.stage !== 'Counterpick' && nextGame.value.stage !== 'Unknown Stage' && breakScreenStore.activeBreakScene !== 'teams');
 const nextPickingTeam = computed<'alpha' | 'bravo'>(() => {
     if (activeRoundStore.scoreSum === 0) return 'alpha';
     const lastWinner = activeRoundStore.activeRound.games[activeRoundStore.scoreSum - 1].winner;
