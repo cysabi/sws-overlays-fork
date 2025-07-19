@@ -1,17 +1,18 @@
 import { getCurrentInstance, inject, InjectionKey, nextTick, onBeforeMount, provide } from 'vue';
+import gsap from 'gsap';
 
 export interface RawTransitions {
     beforeEnter?: (elem: HTMLElement) => void
-    enter?: (elem: HTMLElement, done: gsap.Callback, ...args: unknown[]) => void
+    enter?: (elem: HTMLElement, done?: gsap.Callback, ...args: unknown[]) => gsap.core.Timeline
     beforeLeave?: (elem: HTMLElement) => void
-    leave?: (elem: HTMLElement, done: gsap.Callback, ...args: unknown[]) => void
+    leave?: (elem: HTMLElement, done?: gsap.Callback, ...args: unknown[]) => gsap.core.Timeline
 }
 
 export interface Transitions {
     beforeEnter: (elem: HTMLElement) => void
-    enter: (elem: HTMLElement, done: gsap.Callback, ...args: unknown[]) => void
+    enter: (elem: HTMLElement, done?: gsap.Callback, ...args: unknown[]) => gsap.core.Timeline
     beforeLeave: (elem: HTMLElement) => void
-    leave: (elem: HTMLElement, done: gsap.Callback, ...args: unknown[]) => void
+    leave: (elem: HTMLElement, done?: gsap.Callback, ...args: unknown[]) => gsap.core.Timeline
 }
 
 export type TransitionMap = Record<string, Transitions>;
@@ -55,8 +56,14 @@ export function provideTransitionMapMember(transitions: RawTransitions, key?: st
 function normalizeTransitionFunctions(transitions: RawTransitions): Transitions {
     return {
         beforeEnter: transitions.beforeEnter ?? (() => {}),
-        enter: transitions.enter ?? ((_, done) => done()),
+        enter: transitions.enter ?? ((_, done) => {
+            done?.();
+            return gsap.timeline();
+        }),
         beforeLeave: transitions.beforeLeave ?? (() => { }),
-        leave: transitions.leave ?? ((_, done) => done())
+        leave: transitions.leave ?? ((_, done) => {
+            done?.();
+            return gsap.timeline();
+        })
     };
 }

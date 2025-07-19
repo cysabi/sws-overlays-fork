@@ -1,5 +1,9 @@
 <template>
-    <div class="ticker-scoreboard">
+    <div
+        class="ticker-scoreboard"
+        :class="{ 'focus-teams': focusTeams }"
+    >
+        <div class="space-filler" />
         <div class="team team-alpha">
             <fitted-content class="team-name" align="right">
                 <opacity-swap-transition>
@@ -30,8 +34,8 @@
                 :src="activeRoundStore.activeRound.teamB.logoUrl"
             />
         </div>
-        <event-logo class="event-logo" />
         <div class="match-info">
+            <event-logo class="event-logo" />
             <fitted-content>
                 {{ tournamentDataStore.tournamentData.meta.shortName ?? tournamentDataStore.tournamentData.meta.name ?? 'Splat World Series' }}
             </fitted-content>
@@ -59,28 +63,64 @@ import { useTournamentDataStore } from 'browser-shared/stores/TournamentDataStor
 import ImageLoader from 'components/ImageLoader.vue';
 import OpacitySwapTransition from 'components/OpacitySwapTransition.vue';
 import ScoreCounter from 'components/ScoreCounter.vue';
+import { computed } from 'vue';
+import { useBreakScreenStore } from 'browser-shared/stores/BreakScreenStore';
 
 const activeRoundStore = useActiveRoundStore();
 const tournamentDataStore = useTournamentDataStore();
+const breakScreenStore = useBreakScreenStore();
+
+// todo: allow disabling this behavior
+const focusTeams = computed(() => breakScreenStore.activeBreakScene === 'teams');
 </script>
 
 <style scoped lang="scss">
 @use '../../styles/font-mixins';
+
+$width-change-transition-duration: 1000ms;
+$width-change-transition-delay-enlarge: 250ms;
+$width-change-transition-delay-ensmallen: 1750ms;
+$width-change-transition-ease: cubic-bezier(0.76, 0, 0.24, 1);
 
 .ticker-scoreboard {
     margin: 0 96px;
     background-color: #222;
     display: flex;
     overflow: hidden;
+
+    &.focus-teams {
+        .match-info {
+            width: 0;
+            opacity: 0;
+            transition-delay: $width-change-transition-delay-enlarge, $width-change-transition-delay-enlarge + 150ms;
+        }
+
+        .space-filler {
+            min-width: 182px;
+            transition-delay: $width-change-transition-delay-enlarge;
+        }
+
+        .team-image {
+            transform: translateY(-150%) rotate(-5deg);
+        }
+    }
+}
+
+.space-filler {
+    min-width: 0;
+    transition-property: min-width;
+    transition-duration: 800ms;
+    transition-delay: 1750ms;
+    transition-timing-function: $width-change-transition-ease;
 }
 
 .event-logo {
     height: 100%;
     min-width: 100px;
     padding: 10px 0;
-    margin-left: 16px;
     background-color: #FFF;
     color: #000;
+    grid-row: span 2;
 }
 
 .team {
@@ -112,6 +152,7 @@ const tournamentDataStore = useTournamentDataStore();
     mask-image: linear-gradient(to right, rgba(255, 255, 255, 1.0) 75%, transparent 100%);
     width: 150px;
     height: 150px;
+    transition: transform 500ms ease-in-out 750ms;
 
     &.team-image-blend {
         mix-blend-mode: luminosity;
@@ -160,14 +201,20 @@ const tournamentDataStore = useTournamentDataStore();
 
 .match-info {
     @include font-mixins.font-barlow-condensed;
-    width: 70%;
+    width: 80%;
     overflow: hidden;
     color: white;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    //flex-direction: column;
+    grid-template-columns: 120px 1fr;
+    grid-template-rows: repeat(2, 1fr);
     justify-content: center;
     margin: 0 16px;
     font-size: 24px;
+    transition-property: width, opacity;
+    transition-duration: $width-change-transition-duration, 250ms;
+    transition-delay: $width-change-transition-delay-ensmallen, $width-change-transition-delay-ensmallen + 500ms;
+    transition-timing-function: $width-change-transition-ease, linear;
 }
 
 .organizer-logos {

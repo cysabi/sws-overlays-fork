@@ -11,6 +11,7 @@ import HaverbrookeHollow from './assets/fonts/Haverbrooke Hollow.otf';
 import gsap from 'gsap';
 import PixiPlugin from 'gsap/PixiPlugin';
 import * as PIXI from 'pixi.js';
+import { initBreakScreenStore } from 'browser-shared/stores/BreakScreenStore';
 
 gsap.registerPlugin(PixiPlugin);
 PixiPlugin.registerPIXI(PIXI);
@@ -22,6 +23,7 @@ PixiPlugin.registerPIXI(PIXI);
         initActiveRoundStore(),
         initCasterStore(),
         initAssetPathStore(),
+        initBreakScreenStore(),
         document.fonts.load('800 128px Barlow'),
         document.fonts.load('700 128px Barlow Condensed'),
         document.fonts.load('500 128px Barlow Condensed'),

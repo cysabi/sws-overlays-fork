@@ -165,6 +165,8 @@ provideTransitionMapMember({
                     app.stage.mask = endMask;
                 }
             }, '-=0.5');
+
+        return tl;
     },
     leave: (elem, done) => {
         const tl = gsap.timeline({
@@ -211,8 +213,10 @@ provideTransitionMapMember({
                     app.stage.mask = null;
                 }
             });
+
+        return tl;
     }
-}, 'BottomStageDisplay');
+}, 'UnderCameraGraphic');
 </script>
 
 <style scoped lang="scss">

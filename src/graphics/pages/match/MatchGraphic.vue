@@ -9,8 +9,11 @@
             @leave="stagesLeave"
         >
             <suspense>
+                <team-rosters
+                    v-if="breakScreenStore.activeBreakScene === 'teams'"
+                />
                 <counterpick-alert
-                    v-if="showCounterpickAlert"
+                    v-else-if="showCounterpickAlert"
                     style="width: 800px; height: 150px"
                     :game="nextGame"
                     :next-picking-team="nextPickingTeam"
@@ -56,9 +59,12 @@ import { createTransitionMap } from '../../helpers/TransitionHelper';
 import { useActiveRoundStore } from 'browser-shared/stores/ActiveRoundStore';
 import CasterGrid from './CasterGrid.vue';
 import { useDecorationStore } from 'browser-shared/stores/DecorationStore';
+import { useBreakScreenStore } from 'browser-shared/stores/BreakScreenStore';
+import TeamRosters from './TeamRosters.vue';
 
 const activeRoundStore = useActiveRoundStore();
 const decorationStore = useDecorationStore();
+const breakScreenStore = useBreakScreenStore();
 
 const transitions = createTransitionMap();
 
@@ -102,7 +108,7 @@ const visibleGames = computed(() => {
 });
 
 function beforeStagesEnter(elem: HTMLElement) {
-    transitions.BottomStageDisplay.beforeEnter(elem);
+    transitions.UnderCameraGraphic?.beforeEnter(elem);
 }
 
 function stagesEnter(elem: HTMLElement, done: gsap.Callback) {
@@ -110,11 +116,11 @@ function stagesEnter(elem: HTMLElement, done: gsap.Callback) {
     if (showCounterpickAlert.value) {
         setBackgroundAlertColor();
     }
-    transitions.BottomStageDisplay.enter(elem, done);
+    transitions.UnderCameraGraphic?.enter(elem, done);
 }
 
 function stagesLeave(elem: HTMLElement, done: gsap.Callback) {
-    transitions.BottomStageDisplay.leave(elem, done);
+    transitions.UnderCameraGraphic?.leave(elem, done);
 }
 
 function counterpickAlertBackgroundEnter(elem: HTMLElement, done: gsap.Callback) {

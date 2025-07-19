@@ -90,6 +90,8 @@ const transitions: RawTransitions = {
                 from: 'random'
             }
         });
+
+        return tl;
     },
     beforeEnter: (elem) => {
         gsap.set(getStageElems(elem), { y: 250 });
@@ -108,9 +110,11 @@ const transitions: RawTransitions = {
                 from: 'random'
             }
         });
+
+        return tl;
     }
 };
-provideTransitionMapMember(transitions, 'BottomStageDisplay');
+provideTransitionMapMember(transitions, 'UnderCameraGraphic');
 </script>
 
 <style scoped lang="scss">

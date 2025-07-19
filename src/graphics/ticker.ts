@@ -5,6 +5,7 @@ import { createPinia } from 'pinia';
 import { initActiveRoundStore } from 'browser-shared/stores/ActiveRoundStore';
 import { initTournamentDataStore } from 'browser-shared/stores/TournamentDataStore';
 import TickerGraphic from './pages/ticker/TickerGraphic.vue';
+import { initBreakScreenStore } from 'browser-shared/stores/BreakScreenStore';
 
 (async () => {
     const app = createApp(TickerGraphic);
@@ -12,6 +13,7 @@ import TickerGraphic from './pages/ticker/TickerGraphic.vue';
     await Promise.all([
         initActiveRoundStore(),
         initTournamentDataStore(),
+        initBreakScreenStore(),
         document.fonts.load('800 128px Barlow'),
         document.fonts.load('700 128px Barlow Condensed'),
         document.fonts.load('500 128px Barlow Condensed'),
