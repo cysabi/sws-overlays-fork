@@ -10,6 +10,6 @@ import GameplayCasters from './GameplayCasters.vue';
 
 <style lang="scss">
 body {
-    height: 1080px;
+    height: 1080px !important;
 }
 </style>

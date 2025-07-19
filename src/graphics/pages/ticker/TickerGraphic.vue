@@ -12,7 +12,7 @@ import TickerScoreboard from './TickerScoreboard.vue';
 @use '../../styles/constants';
 
 body {
-    height: 1080px;
+    height: 1080px !important;
 }
 
 #app {

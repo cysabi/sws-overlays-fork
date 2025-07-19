@@ -68,7 +68,7 @@ function resizableContentLeave(elem: HTMLElement) {
 <style lang="scss">
 body {
     color: white;
-    height: 1080px;
+    height: 1080px !important;
 }
 </style>
 
