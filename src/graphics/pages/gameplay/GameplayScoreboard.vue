@@ -210,6 +210,10 @@ export default defineComponent({
                         min-width: 72px;
                         text-align: center;
                         overflow: hidden;
+
+                        > * {
+                            transform: translateY(-2px);
+                        }
                     }
                 }
 
