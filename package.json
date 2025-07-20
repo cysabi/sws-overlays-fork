@@ -9,7 +9,7 @@
     },
     "scripts": {
         "build:clean": "run-s clean build",
-        "build": "run-p build:browser build:extension",
+        "build": "run-p build:browser",
         "build:browser": "vite --config vite.config.browser.mjs build",
         "build:extension": "vite --config vite.config.extension.mts build",
         "clean": "trash node_modules/.cache && trash dashboard && trash graphics && trash shared && trash extension",
