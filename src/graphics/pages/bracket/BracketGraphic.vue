@@ -51,8 +51,8 @@ const renderer = new BracketRenderer({
             });
         },
         onCellUpdate: (elem) => {
-            elem.selectAll('.match-cell__top-team-seed').text((datum: HierarchyNode<Match>) => datum.data.topTeam.seed ?? '-');
-            elem.selectAll('.match-cell__bottom-team-seed').text((datum: HierarchyNode<Match>) => datum.data.bottomTeam.seed ?? '-');
+            elem.selectAll('.match-cell__top-team-seed').text((datum: HierarchyNode<Match>) => datum?.data.topTeam.seed ?? '-');
+            elem.selectAll('.match-cell__bottom-team-seed').text((datum: HierarchyNode<Match>) => datum?.data.bottomTeam.seed ?? '-');
         },
         curveFunction: d3.curveStep,
         bracketHeaderOffset: 16
