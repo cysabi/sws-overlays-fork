@@ -12,7 +12,7 @@
                 {{ props.title }}
             </div>
             <fitted-content class="stage-name-wrapper">
-                <div class="stage-name">{{ props.game.stage }}</div>
+                <div class="stage-name">{{ localeInfoStore.localeInfo.stages[props.game.stage] }}</div>
             </fitted-content>
         </div>
     </div>
@@ -24,8 +24,10 @@ import { useAssetPathStore } from 'browser-shared/stores/AssetPathStore';
 import { AccentColor } from '../../types/AccentColor';
 import ImageLoader from 'components/ImageLoader.vue';
 import FittedContent from 'components/FittedContent.vue';
+import { useLocaleInfoStore } from 'browser-shared/stores/LocaleInfoStore';
 
 const assetPathStore = useAssetPathStore();
+const localeInfoStore = useLocaleInfoStore();
 
 const props = defineProps<{
     game: ActiveRound['games'][number],

@@ -2,7 +2,7 @@
     <div class="waiting-graphic-wrapper">
         <event-logo />
         <div class="edition">
-            {{ tournamentDataStore.edition }}
+            {{ tournamentDataStore.unprefixedTournamentName }}
         </div>
         <div
             class="resizable-content-wrapper"

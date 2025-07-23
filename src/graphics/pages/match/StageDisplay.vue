@@ -10,7 +10,7 @@
         >
             <large-stage-detail-display
                 v-if="props.games.length === 1"
-                title="First Stage"
+                :title="localeInfoStore.strings.match.stages.firstStageTitle"
                 :game="props.games[0]"
                 color="neutral"
                 class="first-stage-highlight"
@@ -25,23 +25,23 @@
                     :class="`winner-${game.winner}`"
                     :key="`game-${i}-${game.winner}-${game.stage}-${game.mode}`"
                 >
-                    <div class="game-index">Game {{ i + 1 }}</div>
+                    <div class="game-index">{{ localeInfoStore.strings.match.stages.gameTitle(i) }}</div>
                     <fitted-content
                         class="subtitle"
                         align="center"
                     >
                         <template v-if="i === 0 || (game.stage !== 'Counterpick' && game.stage !== 'Unknown Stage')">
-                            {{ game.stage }}
+                            {{ localeInfoStore.localeInfo.stages[game.stage] }}
                         </template>
                         <template v-else-if="game.stage === 'Counterpick' || game.stage === 'Unknown Stage'">
-                            {{ props.games[i - 1].winner === 'none' ? 'Counterpick' : `${posessive(activeRoundStore.getOpposingTeamName(props.games[i - 1].winner, '???'))} Pick` }}
+                            {{ props.games[i - 1].winner === 'none' ? localeInfoStore.localeInfo.stages['Counterpick'] : localeInfoStore.strings.match.stages.pickingTeamName(activeRoundStore.getOpposingTeamName(props.games[i - 1].winner, '???')) }}
                         </template>
                     </fitted-content>
                     <fitted-content
                         class="title"
                         align="center"
                     >
-                        {{ activeRoundStore.getTeamName(game.winner, 'Waiting...') }}
+                        {{ activeRoundStore.getTeamName(game.winner, localeInfoStore.strings.match.stages.awaitingCounterpickLabel) }}
                     </fitted-content>
                     <div
                         v-if="game.stage !== 'Counterpick' && game.stage !== 'Unknown Stage'"
@@ -62,10 +62,11 @@ import { useAssetPathStore } from 'browser-shared/stores/AssetPathStore';
 import FittedContent from 'components/FittedContent.vue';
 import gsap from 'gsap';
 import { provideTransitionMapMember, RawTransitions } from '../../helpers/TransitionHelper';
-import { posessive } from 'browser-shared/helpers/StringHelper';
+import { useLocaleInfoStore } from 'browser-shared/stores/LocaleInfoStore';
 
 const activeRoundStore = useActiveRoundStore();
 const assetPathStore = useAssetPathStore();
+const localeInfoStore = useLocaleInfoStore();
 
 const props = defineProps<{
     games: ActiveRound['games']

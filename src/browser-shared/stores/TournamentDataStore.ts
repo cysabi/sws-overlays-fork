@@ -15,8 +15,8 @@ export const useTournamentDataStore = defineStore('tournamentData', {
         tournamentData: null
     } as unknown as TournamentDataStore),
     getters: {
-        edition: state => {
-            const splitTournamentName = state.tournamentData.meta.name?.split('-');
+        unprefixedTournamentName: state => {
+            const splitTournamentName = state.tournamentData.meta.shortName?.split('-');
             if (splitTournamentName == null || splitTournamentName.length <= 1) {
                 return splitTournamentName?.[0] ?? 'FIX ME: UNKNOWN TOURNAMENT NAME!';
             }

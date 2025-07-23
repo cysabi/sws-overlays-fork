@@ -29,7 +29,7 @@
     </div>
 
     <div class="content-wrapper layout vertical center-horizontal">
-        <caster-grid />
+        <caster-grid :casters="casterStore.casters" />
     </div>
 
     <maze-background>
@@ -57,14 +57,16 @@ import { computed, watch } from 'vue';
 import StageDisplay from './StageDisplay.vue';
 import { createTransitionMap } from '../../helpers/TransitionHelper';
 import { useActiveRoundStore } from 'browser-shared/stores/ActiveRoundStore';
-import CasterGrid from './CasterGrid.vue';
 import { useDecorationStore } from 'browser-shared/stores/DecorationStore';
 import { useBreakScreenStore } from 'browser-shared/stores/BreakScreenStore';
 import TeamRosters from './TeamRosters.vue';
+import { useCasterStore } from 'browser-shared/stores/CasterStore';
+import CasterGrid from 'components/CasterGrid.vue';
 
 const activeRoundStore = useActiveRoundStore();
 const decorationStore = useDecorationStore();
 const breakScreenStore = useBreakScreenStore();
+const casterStore = useCasterStore();
 
 const transitions = createTransitionMap();
 

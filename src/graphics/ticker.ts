@@ -6,6 +6,7 @@ import { initActiveRoundStore } from 'browser-shared/stores/ActiveRoundStore';
 import { initTournamentDataStore } from 'browser-shared/stores/TournamentDataStore';
 import TickerGraphic from './pages/ticker/TickerGraphic.vue';
 import { initBreakScreenStore } from 'browser-shared/stores/BreakScreenStore';
+import { initLocaleInfoStore } from 'browser-shared/stores/LocaleInfoStore';
 
 (async () => {
     const app = createApp(TickerGraphic);
@@ -14,6 +15,7 @@ import { initBreakScreenStore } from 'browser-shared/stores/BreakScreenStore';
         initActiveRoundStore(),
         initTournamentDataStore(),
         initBreakScreenStore(),
+        initLocaleInfoStore(),
         document.fonts.load('800 128px Barlow'),
         document.fonts.load('700 128px Barlow Condensed'),
         document.fonts.load('500 128px Barlow Condensed'),

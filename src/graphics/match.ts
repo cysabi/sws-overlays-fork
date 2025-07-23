@@ -12,6 +12,7 @@ import gsap from 'gsap';
 import PixiPlugin from 'gsap/PixiPlugin';
 import * as PIXI from 'pixi.js';
 import { initBreakScreenStore } from 'browser-shared/stores/BreakScreenStore';
+import { initLocaleInfoStore } from 'browser-shared/stores/LocaleInfoStore';
 
 gsap.registerPlugin(PixiPlugin);
 PixiPlugin.registerPIXI(PIXI);
@@ -24,6 +25,7 @@ PixiPlugin.registerPIXI(PIXI);
         initCasterStore(),
         initAssetPathStore(),
         initBreakScreenStore(),
+        initLocaleInfoStore(),
         document.fonts.load('800 128px Barlow'),
         document.fonts.load('700 128px Barlow Condensed'),
         document.fonts.load('500 128px Barlow Condensed'),

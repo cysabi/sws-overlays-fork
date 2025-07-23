@@ -11,7 +11,7 @@
             class="gameplay-casters"
         >
             <div class="title">
-                Commentators
+                {{ localeInfoStore.strings.gameplay.castersTitle }}
             </div>
             <div
                 v-for="(caster, id) in casterStore.casters"
@@ -25,7 +25,12 @@
                     {{ caster.name }}
                 </fitted-content>
                 <div class="caster-social">
-                    <span class="caster-pronouns">{{ caster.pronouns }}</span>
+                    <span
+                        v-if="!isBlank(caster.pronouns)"
+                        class="caster-pronouns"
+                    >
+                        {{ caster.pronouns }}
+                    </span>
                     <font-awesome-icon
                         :icon="['fab', isBluesky(caster.twitter) ? 'bluesky' : 'twitter']"
                         class="icon"
@@ -54,12 +59,15 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons/faTwitter';
 import { faBluesky } from '@fortawesome/free-brands-svg-icons/faBluesky';
 import FittedContent from 'components/FittedContent.vue';
+import { useLocaleInfoStore } from 'browser-shared/stores/LocaleInfoStore';
+import { isBlank } from 'browser-shared/helpers/StringHelper';
 
 library.add(faTwitter, faBluesky);
 
 const castersVisible = ref(false);
 
 const casterStore = useCasterStore();
+const localeInfoStore = useLocaleInfoStore();
 
 nodecg.listenFor('mainShowCasters', DASHBOARD_BUNDLE_NAME, () => {
     if (!castersVisible.value) {
@@ -117,6 +125,7 @@ function castersLeave(elem: HTMLElement, done: gsap.Callback) {
     background-color: rgba(12, 12, 12, 0.9);
     color: #fff;
     font-size: 28px;
+    line-height: 36px;
     width: 100%;
     text-align: center;
     padding: 4px 0;
@@ -134,15 +143,19 @@ function castersLeave(elem: HTMLElement, done: gsap.Callback) {
     @include font-mixins.font-anton;
     text-transform: uppercase;
     font-size: 45px;
-    line-height: 55px;
     background: constants.$accent-gradient;
-    padding: 2px 16px 0;
+    padding: 0 16px;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 62px;
 }
 
 .caster-social {
     @include font-mixins.font-barlow-condensed;
     font-size: 28px;
+    line-height: 34px;
     font-weight: 400;
     margin-top: -3px;
     padding: 4px 8px;

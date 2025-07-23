@@ -10,6 +10,12 @@
     src: url('../assets/fonts/Haverbrooke Hollow.otf');
 }
 
+// Annoying workaround to make this font always extrabold even if other fallback fonts aren't
+@font-face {
+    font-family: 'Noto Sans JP ExtraBold';
+    src: url('../assets/fonts/NotoSansJP-ExtraBold.ttf');
+}
+
 body {
     font-family: 'Blinker', 'Noto Sans JP', sans-serif;
     font-weight: 400;

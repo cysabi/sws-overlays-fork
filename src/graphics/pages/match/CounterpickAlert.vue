@@ -3,10 +3,10 @@
         class="counterpick-alert"
         ref="root"
     >
-        <LargeStageDetailDisplay
+        <large-stage-detail-display
             v-if="props.game != null"
             class="underlay"
-            :title="`${posessive(activeRoundStore.getTeamName(props.nextPickingTeam, '???'))} Pick`"
+            :title="localeInfoStore.strings.match.stages.pickingTeamName(activeRoundStore.getTeamName(nextPickingTeam, '???'))"
             :color="props.nextPickingTeam"
             :game="props.game"
         />
@@ -21,10 +21,11 @@ import gsap from 'gsap';
 import LargeStageDetailDisplay from './LargeStageDetailDisplay.vue';
 import { provideTransitionMapMember } from '../../helpers/TransitionHelper';
 import { useActiveRoundStore } from 'browser-shared/stores/ActiveRoundStore';
-import { posessive } from 'browser-shared/helpers/StringHelper';
 import { DotGridParticleContainer } from 'components/DotGridParticleContainer';
+import { useLocaleInfoStore } from 'browser-shared/stores/LocaleInfoStore';
 
 const activeRoundStore = useActiveRoundStore();
+const localeInfoStore = useLocaleInfoStore();
 
 const root = useTemplateRef('root');
 
@@ -75,7 +76,7 @@ background.fill(0xFFFFFF);
 app.stage.addChild(background);
 
 const text = new Text({
-    text: '???\'S PICK',
+    text: localeInfoStore.strings.match.stages.pickingTeamName('???'),
     style: {
         fill: 0xFFFFFF,
         fontSize: 128,
@@ -95,7 +96,7 @@ app.stage.addChild(text);
 
 watch(() => ({
     team: props.nextPickingTeam,
-    text: `${posessive(activeRoundStore.getTeamName(props.nextPickingTeam, '???')).toUpperCase()} PICK`
+    text: localeInfoStore.strings.match.stages.pickingTeamName(activeRoundStore.getTeamName(props.nextPickingTeam, '???'))
 }), newValue => {
     background.tint = newValue.team === 'alpha' ? 0xE8D912 : 0xA032DB;
     text.style.fill = newValue.team === 'alpha' ? 0x222222 : 0xFFFFFF;

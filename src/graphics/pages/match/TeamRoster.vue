@@ -57,26 +57,6 @@ const teamData = computed(() => props.team === 'A'
 
 const players = computed(() => teamData.value.players.slice(0, 6));
 
-/*
-.donation-reminder-leave-active {
-    position: absolute;
-}
-.donation-reminder-enter-active,
-.donation-reminder-leave-active {
-    transition-duration: 500ms;
-    transition-property: transform, opacity;
-    transition-timing-function: ease-in-out;
-}
-.donation-reminder-leave-to {
-    transform: rotate3d(1, 0, 0, -90deg) translateZ(40px) scale(0.98);
-    opacity: 10%;
-}
-.donation-reminder-enter-from {
-    transform: rotate3d(1, 0, 0, 90deg) translateZ(40px) scale(0.98);
-    opacity: 10%;
-}
- */
-
 const transitions: RawTransitions = {
     beforeEnter: (elem) => {
         const isTeamChange = elem.classList.contains('players');

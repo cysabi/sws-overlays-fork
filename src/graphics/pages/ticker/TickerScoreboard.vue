@@ -37,7 +37,7 @@
         <div class="match-info">
             <event-logo class="event-logo" />
             <fitted-content>
-                {{ tournamentDataStore.tournamentData.meta.shortName ?? tournamentDataStore.tournamentData.meta.name ?? 'Splat World Series' }}
+                {{ localeInfoStore.strings.common.longTournamentName(tournamentDataStore.unprefixedTournamentName) }}
             </fitted-content>
             <fitted-content>
                 <opacity-swap-transition>
@@ -65,10 +65,12 @@ import OpacitySwapTransition from 'components/OpacitySwapTransition.vue';
 import ScoreCounter from 'components/ScoreCounter.vue';
 import { computed } from 'vue';
 import { useBreakScreenStore } from 'browser-shared/stores/BreakScreenStore';
+import { useLocaleInfoStore } from 'browser-shared/stores/LocaleInfoStore';
 
 const activeRoundStore = useActiveRoundStore();
 const tournamentDataStore = useTournamentDataStore();
 const breakScreenStore = useBreakScreenStore();
+const localeInfoStore = useLocaleInfoStore();
 
 // todo: allow disabling this behavior
 const focusTeams = computed(() => breakScreenStore.activeBreakScene === 'teams');
