@@ -23,7 +23,7 @@ interface TranslatableText {
             BEST_OF: (numberOfGames: number) => string
             PLAY_ALL: (numberOfGames: number) => string
         }
-        longTournamentName: (shortTournamentName: string) => string
+        longTournamentName: (tournamentSeriesName: string) => string
     }
     match: {
         stages: {
@@ -53,7 +53,7 @@ export const useLocaleInfoStore = defineStore('localeInfo', {
                                 BEST_OF: (numberOfGames: number) => `Best of ${numberOfGames}`,
                                 PLAY_ALL: (numberOfGames: number) => `Play all ${numberOfGames}`
                             },
-                            longTournamentName: (shortTournamentName: string) => `Splat World Series - ${shortTournamentName}`
+                            longTournamentName: (tournamentSeriesName) => `Splat World Series - ${tournamentSeriesName}`
                         },
                         match: {
                             stages: {
@@ -74,7 +74,7 @@ export const useLocaleInfoStore = defineStore('localeInfo', {
                                 BEST_OF: (numberOfGames: number) => `Best of ${numberOfGames}`,
                                 PLAY_ALL: (numberOfGames: number) => `Play all ${numberOfGames}`
                             },
-                            longTournamentName: (shortTournamentName: string) => `Splat World Series - ${shortTournamentName}`
+                            longTournamentName: (tournamentSeriesName) => `Splat World Series - ${tournamentSeriesName}`
                         },
                         match: {
                             stages: {
