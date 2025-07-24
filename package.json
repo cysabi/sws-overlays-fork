@@ -21,6 +21,16 @@
     },
     "nodecg": {
         "compatibleRange": "^1.7.0 || ^2.0.0",
+        "dashboardPanels": [
+            {
+                "name": "preshow",
+                "title": "SWS Preshow",
+                "width": 2,
+                "file": "preshow.html",
+                "workspace": "ipl",
+                "headerColor": "#A02FBA"
+            }
+        ],
         "graphics": [
             {
                 "file": "match.html",
@@ -46,15 +56,23 @@
                 "file": "gameplay.html",
                 "width": 1920,
                 "height": 1080
+            },
+            {
+                "file": "preshow.html",
+                "width": 1920,
+                "height": 1080
             }
-        ]
+        ],
+        "bundleDependencies": {
+            "ipl-overlay-controls": "^4.18.0"
+        }
     },
     "devDependencies": {
         "@fortawesome/fontawesome-svg-core": "6.7.2",
         "@fortawesome/free-brands-svg-icons": "6.7.2",
         "@fortawesome/free-solid-svg-icons": "6.7.2",
         "@fortawesome/vue-fontawesome": "3.0.8",
-        "@nodecg/types": "2.5.3",
+        "@nodecg/types": "2.1.12",
         "@tourneyview/common": "0.9.0-alpha.0",
         "@types/d3": "^7.4.3",
         "@types/luxon": "3.6.2",

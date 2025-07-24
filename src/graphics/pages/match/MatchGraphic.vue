@@ -134,6 +134,13 @@ function counterpickAlertBackgroundLeave(elem: HTMLElement, done: gsap.Callback)
 }
 </script>
 
+<style lang="scss">
+.casters-layout {
+    height: 590px;
+    align-items: end;
+}
+</style>
+
 <style lang="scss" scoped>
 .counterpick-alert-wrapper {
     height: 25%;

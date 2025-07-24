@@ -15,7 +15,6 @@
                     v-if="isBlank(caster.videoUrl)"
                     class="caster-image"
                     :src="caster.imageUrl"
-                    default-src="/bundles/sj-overlays/assets/caster-image-placeholder.webp"
                 />
                 <video-loader
                     v-else
@@ -73,12 +72,29 @@ const visualHeight = computed(() => props.width * (9 / 16));
 </script>
 
 <style scoped lang="scss">
+@use 'sass:math';
 @use '../styles/font-mixins';
 @use '../styles/constants';
 
 .caster-display-wrapper {
     padding: 24px;
     box-sizing: border-box;
+    width: max-content;
+
+    &.compact {
+        transform: scale(0.5);
+
+        .caster-social {
+            transform: translateY(-100%);
+            transition-timing-function: cubic-bezier(0.5, 0, 0.75, 0);
+            transition-delay: 150ms;
+        }
+
+        .caster-details {
+            transform: translateY(32px) scale(1.5);
+            transition-delay: 150ms;
+        }
+    }
 }
 
 .caster-display {
@@ -91,10 +107,12 @@ const visualHeight = computed(() => props.width * (9 / 16));
     bottom: -15px;
     right: -10px;
     overflow: hidden;
-    background-color: #222;
     width: max-content;
     color: white;
     min-width: 300px;
+    transform-origin: center right;
+    transition: transform 350ms cubic-bezier(0.76, 0, 0.24, 1);
+    transition-delay: 250ms;
 }
 
 .caster-name {
@@ -108,6 +126,8 @@ const visualHeight = computed(() => props.width * (9 / 16));
     align-items: center;
     justify-content: center;
     height: 62px;
+    position: relative;
+    z-index: 2;
 }
 
 .caster-social {
@@ -118,6 +138,9 @@ const visualHeight = computed(() => props.width * (9 / 16));
     line-height: 30px;
     padding: 4px 16px 4px 16px;
     text-align: center;
+    background-color: #222;
+    transition: transform 350ms cubic-bezier(0.25, 1, 0.5, 1);
+    transition-delay: 250ms;
 
     .icon {
         transform: translateY(1px);
@@ -142,7 +165,6 @@ const visualHeight = computed(() => props.width * (9 / 16));
 
 .caster-visual {
     background-color: #E0E0E0;
-
     overflow: hidden;
     width: 100%;
 
