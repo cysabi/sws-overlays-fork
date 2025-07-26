@@ -23,6 +23,7 @@ import { provideTransitionMapMember } from '../../helpers/TransitionHelper';
 import { useActiveRoundStore } from 'browser-shared/stores/ActiveRoundStore';
 import { DotGridParticleContainer } from 'components/DotGridParticleContainer';
 import { useLocaleInfoStore } from 'browser-shared/stores/LocaleInfoStore';
+import { getContrastingTextColor } from '../../helpers/ColorHelper';
 
 const activeRoundStore = useActiveRoundStore();
 const localeInfoStore = useLocaleInfoStore();
@@ -95,11 +96,11 @@ text.width = Math.min(text.width, app.renderer.width * 0.9);
 app.stage.addChild(text);
 
 watch(() => ({
-    team: props.nextPickingTeam,
+    teamColor: activeRoundStore.getTeamColor(props.nextPickingTeam),
     text: localeInfoStore.strings.match.stages.pickingTeamName(activeRoundStore.getTeamName(props.nextPickingTeam, '???'))
 }), newValue => {
-    background.tint = newValue.team === 'alpha' ? 0xE8D912 : 0xA032DB;
-    text.style.fill = newValue.team === 'alpha' ? 0x222222 : 0xFFFFFF;
+    background.tint = newValue.teamColor;
+    text.style.fill = getContrastingTextColor(newValue.teamColor, 0xFFFFFF, 0x111111);
     text.text = newValue.text;
 }, { immediate: true });
 

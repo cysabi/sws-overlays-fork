@@ -7,7 +7,8 @@
         <div class="stage-details">
             <div
                 class="title"
-                :class="`color-${props.color}`"
+                :class="{ 'color-neutral': props.color === 'neutral' }"
+                :style="{ color: props.color === 'neutral' ? undefined : darkenColorIfNeeded(activeRoundStore.getTeamColor(props.color)) }"
             >
                 {{ props.title }}
             </div>
@@ -25,7 +26,10 @@ import { AccentColor } from '../../types/AccentColor';
 import ImageLoader from 'components/ImageLoader.vue';
 import FittedContent from 'components/FittedContent.vue';
 import { useLocaleInfoStore } from 'browser-shared/stores/LocaleInfoStore';
+import { useActiveRoundStore } from 'browser-shared/stores/ActiveRoundStore';
+import { darkenColorIfNeeded } from '../../helpers/ColorHelper';
 
+const activeRoundStore = useActiveRoundStore();
 const assetPathStore = useAssetPathStore();
 const localeInfoStore = useLocaleInfoStore();
 

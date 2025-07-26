@@ -15,7 +15,7 @@
                             class="team-display team-alpha"
                             :style="{
                                 backgroundColor: teamA?.color,
-                                color: getContrastingTextColor(teamA?.color, '#ffffff', '#111111')
+                                color: getContrastingTextColor(teamA?.color, '#ffffff', '#222222')
                             }"
                         >
                             <opacity-swap-transition>
@@ -43,7 +43,7 @@
                             class="team-display team-bravo"
                             :style="{
                                 backgroundColor: teamB?.color,
-                                color: getContrastingTextColor(teamB?.color, '#ffffff', '#111111')
+                                color: getContrastingTextColor(teamB?.color, '#ffffff', '#222222')
                             }"
                         >
                             <opacity-swap-transition>
@@ -94,7 +94,7 @@ import OpacitySwapTransition from '../../components/OpacitySwapTransition.vue';
 import { addDots } from 'browser-shared/helpers/StringHelper';
 import gsap from 'gsap';
 import { useActiveRoundStore } from 'browser-shared/stores/ActiveRoundStore';
-import { getContrastingTextColor } from '@iplsplatoon/vue-components';
+import { getContrastingTextColor } from '../../helpers/ColorHelper';
 import ScoreCounter from 'components/ScoreCounter.vue';
 import EventLogo from 'components/EventLogo.vue';
 
@@ -191,7 +191,7 @@ export default defineComponent({
                     top: 0;
                     left: 0;
                     position: absolute;
-                    background: linear-gradient(to bottom, rgba(34, 34, 34, 0) 0%, rgba(34, 34, 34, 0.2) 100%);
+                    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 100%);
                     mix-blend-mode: multiply;
                 }
 

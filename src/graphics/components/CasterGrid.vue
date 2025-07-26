@@ -89,7 +89,7 @@ onMounted(() => {
 <style scoped lang="scss">
 .casters-wrapper {
     position: absolute;
-    top: 50px;
+    top: 100px;
     z-index: 999;
 
     &.compact {

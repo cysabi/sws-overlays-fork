@@ -49,7 +49,10 @@ export const useActiveRoundStore = defineStore('activeRound', {
                 case 'bravo':
                     return 'alpha';
             }
-        }
+        },
+        getTeamColor: state => (team: ActiveRound['games'][number]['winner']) => team === 'alpha'
+            ? state.activeRound.teamA.color
+            : state.activeRound.teamB.color
     }
 });
 

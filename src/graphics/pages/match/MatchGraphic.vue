@@ -80,10 +80,10 @@ const nextPickingTeam = computed<'alpha' | 'bravo'>(() => {
 });
 
 function setBackgroundAlertColor() {
-    decorationStore.mazeBackgroundAlertColor = nextPickingTeam.value === 'alpha' ? '#E8D912' : '#A032DB';
+    decorationStore.mazeBackgroundAlertColor = activeRoundStore.getTeamColor(nextPickingTeam.value);
 }
 
-watch(() => nextPickingTeam.value, () => {
+watch(() => activeRoundStore.getTeamColor(nextPickingTeam.value), () => {
     if (showCounterpickAlert.value) {
         setBackgroundAlertColor();
     }

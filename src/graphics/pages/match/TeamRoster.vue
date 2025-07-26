@@ -2,6 +2,10 @@
     <div
         class="team-roster"
         :class="`team-${props.team.toLowerCase()}`"
+        :style="{
+            '--accent-color': teamData?.color,
+            '--text-color': getContrastingTextColor(teamData?.color, '#ffffff', '#222222')
+        }"
     >
         <div class="background" />
         <transition
@@ -51,6 +55,7 @@ import FittedContent from 'components/FittedContent.vue';
 import { provideTransitionMapMember, RawTransitions } from '../../helpers/TransitionHelper';
 import gsap from 'gsap';
 import { weaponInfoMap } from '../../helpers/WeaponInfoMap';
+import { getContrastingTextColor } from '../../helpers/ColorHelper';
 
 const activeRoundStore = useActiveRoundStore();
 
@@ -159,34 +164,22 @@ provideTransitionMapMember(transitions, `Team${props.team}Roster`);
 <style scoped lang="scss">
 @use '../../styles/font-mixins';
 
+@property --accent-color {
+    syntax: '<color>';
+    initial-value: #FFFFFF;
+    inherits: true;
+}
+
+@property --text-color {
+    syntax: '<color>';
+    initial-value: #222222;
+    inherits: true;
+}
+
 .team-roster {
     display: flex;
     flex-direction: row;
     position: relative;
-
-    &.team-a {
-        flex-direction: row-reverse;
-
-        .players > * {
-            background: linear-gradient(to bottom, #fff300 0%, #E8D912 100%);
-            color: #222;
-        }
-
-        .background {
-            background: linear-gradient(to bottom, rgba(255, 243, 0, 0) 0%, rgba(232, 217, 18, 0.2) 50%);
-        }
-    }
-
-    &.team-b {
-        .players > * {
-            background: linear-gradient(to bottom, #A032DB 0%, #BA69E5 100%);
-            color: white;
-        }
-
-        .background {
-            background: linear-gradient(to bottom, rgba(160, 50, 219, 0) 0%, rgba(186, 105, 229, 0.2) 50%);
-        }
-    }
 }
 
 .background {
@@ -245,6 +238,10 @@ provideTransitionMapMember(transitions, `Team${props.team}Roster`);
         transform: translate3d(0, 0, 0);
         min-height: 75px;
         max-height: 75px;
+        background-color: var(--accent-color);
+        color: var(--text-color);
+        transition-property: --text-color, --accent-color;
+        transition-duration: 500ms;
 
         &:after {
             content: '';
@@ -256,6 +253,17 @@ provideTransitionMapMember(transitions, `Team${props.team}Roster`);
             box-sizing: border-box;
             border: 3px solid rgba(34, 34, 34, 0.25);
             mix-blend-mode: soft-light;
+        }
+
+        &:before {
+            content: '';
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            position: absolute;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 100%);
+            mix-blend-mode: multiply;
         }
     }
 }

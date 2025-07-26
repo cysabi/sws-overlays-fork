@@ -4,7 +4,13 @@
         :class="{ 'focus-teams': focusTeams }"
     >
         <div class="space-filler" />
-        <div class="team team-alpha">
+        <div
+            class="team team-alpha"
+            :style="{
+                backgroundColor: activeRoundStore.activeRound.teamA?.color,
+                color: getContrastingTextColor(activeRoundStore.activeRound.teamA?.color, '#ffffff', '#222222')
+            }"
+        >
             <fitted-content class="team-name" align="right">
                 <opacity-swap-transition>
                     <div :key="activeRoundStore.activeRound.teamA.name">{{ addDots(activeRoundStore.activeRound.teamA.name) }}</div>
@@ -19,7 +25,13 @@
                 :src="activeRoundStore.activeRound.teamA.logoUrl"
             />
         </div>
-        <div class="team team-bravo">
+        <div
+            class="team team-bravo"
+            :style="{
+                backgroundColor: activeRoundStore.activeRound.teamB?.color,
+                color: getContrastingTextColor(activeRoundStore.activeRound.teamB?.color, '#ffffff', '#222222')
+            }"
+        >
             <fitted-content class="team-name" align="right">
                 <opacity-swap-transition>
                     <div :key="activeRoundStore.activeRound.teamB.name">{{ addDots(activeRoundStore.activeRound.teamB.name) }}</div>
@@ -66,6 +78,7 @@ import ScoreCounter from 'components/ScoreCounter.vue';
 import { computed } from 'vue';
 import { useBreakScreenStore } from 'browser-shared/stores/BreakScreenStore';
 import { useLocaleInfoStore } from 'browser-shared/stores/LocaleInfoStore';
+import { getContrastingTextColor } from '../../helpers/ColorHelper';
 
 const activeRoundStore = useActiveRoundStore();
 const tournamentDataStore = useTournamentDataStore();
@@ -129,16 +142,22 @@ $width-change-transition-ease: cubic-bezier(0.76, 0, 0.24, 1);
     width: 100%;
     overflow: hidden;
     position: relative;
+    transition-duration: 500ms;
+    transition-property: background-color, color;
 
-    &.team-alpha {
-        background: linear-gradient(to bottom, #fff300 0%, #E8D912 100%);
-        color: #222;
-        margin-right: 16px;
+    &:before {
+        content: '';
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        position: absolute;
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 100%);
+        mix-blend-mode: multiply;
     }
 
-    &.team-bravo {
-        background: linear-gradient(to bottom, #A032DB 0%, #BA69E5 100%);
-        color: white;
+    &.team-alpha {
+        margin-right: 16px;
     }
 }
 

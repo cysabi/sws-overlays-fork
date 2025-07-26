@@ -23,6 +23,9 @@ import {
 } from 'pixi.js';
 import gsap from 'gsap';
 import { provideTransitionMapMember } from '../../helpers/TransitionHelper';
+import { useActiveRoundStore } from 'browser-shared/stores/ActiveRoundStore';
+
+const activeRoundStore = useActiveRoundStore();
 
 const root = useTemplateRef('root');
 
@@ -127,8 +130,9 @@ const maskGraphics = new Graphics()
     .fill(maskGradient);
 app.stage.mask = new Sprite(app.renderer.generateTexture(maskGraphics));
 
-watch(() => props.teamColor, newValue => {
-    tiltedTextContainer.tint = newValue === 'alpha' ? 0xECCE00 : 0xA032DB;
+watch(() => activeRoundStore.getTeamColor(props.teamColor), newValue => {
+    // Exactly one color out of 20 ink colors didn't quite strike the landing with this graphic, so we'll work around it the lazy way
+    tiltedTextContainer.tint = newValue === '#EEFC58' ? '#ece951' : newValue;
 }, { immediate: true });
 
 provideTransitionMapMember({

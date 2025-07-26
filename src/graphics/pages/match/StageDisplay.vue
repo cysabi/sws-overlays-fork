@@ -24,6 +24,10 @@
                     class="small-stage-display"
                     :class="`winner-${game.winner}`"
                     :key="`game-${i}-${game.winner}-${game.stage}-${game.mode}`"
+                    :style="{
+                        '--accent-color': activeRoundStore.getTeamColor(game.winner),
+                        '--text-color': getContrastingTextColor(activeRoundStore.getTeamColor(game.winner), '#ffffff', '#111111')
+                    }"
                 >
                     <div class="game-index">{{ localeInfoStore.strings.match.stages.gameTitle(i) }}</div>
                     <fitted-content
@@ -63,6 +67,7 @@ import FittedContent from 'components/FittedContent.vue';
 import gsap from 'gsap';
 import { provideTransitionMapMember, RawTransitions } from '../../helpers/TransitionHelper';
 import { useLocaleInfoStore } from 'browser-shared/stores/LocaleInfoStore';
+import { getContrastingTextColor } from '../../helpers/ColorHelper';
 
 const activeRoundStore = useActiveRoundStore();
 const assetPathStore = useAssetPathStore();
@@ -121,6 +126,18 @@ provideTransitionMapMember(transitions, 'UnderCameraGraphic');
 <style scoped lang="scss">
 @use '../../styles/font-mixins';
 
+@property --accent-color {
+    syntax: '<color>';
+    initial-value: #FFFFFF;
+    inherits: true;
+}
+
+@property --text-color {
+    syntax: '<color>';
+    initial-value: #222222;
+    inherits: true;
+}
+
 .stage-display {
     filter: drop-shadow(0 0 3px rgba(34, 34, 34, 0.25));
     display: grid;
@@ -141,8 +158,11 @@ provideTransitionMapMember(transitions, 'UnderCameraGraphic');
     align-items: center;
     justify-content: center;
     position: relative;
-    color: #fff;
     overflow: hidden;
+    background: var(--accent-color);
+    color: var(--text-color);
+    transition-property: --text-color, --accent-color;
+    transition-duration: 500ms;
 
     .stage-image {
         position: absolute;
@@ -152,6 +172,7 @@ provideTransitionMapMember(transitions, 'UnderCameraGraphic');
         height: 100%;
         background-size: cover;
         mix-blend-mode: overlay;
+        opacity: 0.25;
     }
 
     .game-index {
@@ -165,8 +186,8 @@ provideTransitionMapMember(transitions, 'UnderCameraGraphic');
     .subtitle {
         @include font-mixins.font-barlow-condensed;
         font-weight: 500;
-        font-size: 30px;
-        line-height: 35px;
+        font-size: 35px;
+        line-height: 38px;
         margin-top: -2px;
         width: 95%;
     }
@@ -177,25 +198,9 @@ provideTransitionMapMember(transitions, 'UnderCameraGraphic');
         width: 95%;
     }
 
-    &.winner-alpha {
-        background: linear-gradient(to bottom, #fff300 0%, #E8D912 100%);
-        color: #222;
-
-        .stage-image {
-            opacity: 0.75;
-        }
-    }
-
-    &.winner-bravo {
-        background: linear-gradient(to bottom, #A032DB 0%, #BA69E5 100%);
-
-        .stage-image {
-            opacity: 0.5;
-        }
-    }
-
     &.winner-none {
         background: linear-gradient(to bottom, #353535 0%, #282828 100%);
+        color: #fff;
     }
 }
 
