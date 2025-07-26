@@ -101,10 +101,6 @@ $width-change-transition-ease: cubic-bezier(0.76, 0, 0.24, 1);
             min-width: 182px;
             transition-delay: $width-change-transition-delay-enlarge;
         }
-
-        .team-image {
-            transform: translateY(-150%) rotate(-5deg);
-        }
     }
 }
 
@@ -154,7 +150,6 @@ $width-change-transition-ease: cubic-bezier(0.76, 0, 0.24, 1);
     mask-image: linear-gradient(to right, rgba(255, 255, 255, 1.0) 75%, transparent 100%);
     width: 150px;
     height: 150px;
-    transition: transform 500ms ease-in-out 750ms;
 
     &.team-image-blend {
         mix-blend-mode: luminosity;

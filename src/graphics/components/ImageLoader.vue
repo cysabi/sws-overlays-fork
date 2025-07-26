@@ -1,12 +1,12 @@
 <template>
     <div class="image-loader-wrapper">
-        <opacity-swap-transition mode="out-in">
-            <div
-                v-if="imageVisible"
-                :style="{ backgroundImage: `url('${imageExists ? src : defaultSrc}')` }"
-                class="image-loader"
-            />
-        </opacity-swap-transition>
+        <div
+            :style="{
+                backgroundImage: `url('${imageExists ? src : defaultSrc}')`,
+                opacity: imageVisible ? '1' : '0'
+            }"
+            class="image-loader"
+        />
     </div>
 </template>
 
@@ -70,5 +70,6 @@ export default defineComponent({
     height: 100%;
     width: 100%;
     position: relative;
+    transition: opacity 350ms linear;
 }
 </style>
