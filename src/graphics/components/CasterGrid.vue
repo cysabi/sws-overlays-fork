@@ -43,7 +43,7 @@ const casterWidth = computed(() => {
     case 3:
       return 500;
     default:
-      return 700;
+      return 500;
   }
 });
 
