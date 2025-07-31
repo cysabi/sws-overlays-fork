@@ -52,7 +52,7 @@ body {
 }
 
 .caster-grid {
-    margin: -32px 175px 0 175px;
+  margin: -76px 175px 0 175px;
 }
 
 .casters-layout {
