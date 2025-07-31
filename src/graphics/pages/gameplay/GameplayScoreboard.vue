@@ -101,6 +101,7 @@
                         paddingBottom: '6pt',
                         gap: '2pt',
                         flexShrink: 1,
+                        justifyContent: 'center',
                       }"
                     >
                       <div
@@ -229,6 +230,7 @@
                         paddingBottom: '6pt',
                         gap: '2pt',
                         flexShrink: 1,
+                        justifyContent: 'center',
                       }"
                     >
                       <div
@@ -476,50 +478,46 @@ export default defineComponent({
     const flags = {
       jp: "https://iili.io/F8x2Db9.png",
       us: "https://iili.io/F8x2mxe.png",
-      eu: "https://iili.io/F8x2yib.png",
-      es: "https://iili.io/F8x2pWu.png",
+      eu: "https://iili.io/F8x2pWu.png",
+      es: "https://iili.io/F8x2yib.png",
     } as const;
 
     const teamFlags = {
-      DragonReX: "jp",
-      "The Invincible Fleet Rei Maru": "jp",
-      "False Dream": "jp",
-      "Final Weapon": "jp",
-      FreeFlow: "us",
-      Fruittella: "eu",
-      FTWin: "us",
-      Hornet: "jp",
-      "Milky Way": "us",
-      Moonlight: "us",
-      "New Meta": "eu",
-      PxG: "es",
-      "Takoyaki Party": "jp",
-      Hypernova: "us",
-      Utopia: "jp",
-      "Samurai Cat": "jp",
-      "Placeholder Team A": "es",
-      "Placeholder Team B": "jp",
+      [38001]: "jp",
+      [37375]: "jp",
+      [39243]: "jp",
+      [37135]: "jp",
+      [36331]: "jp",
+      [39244]: "jp",
+      [38264]: "jp",
+      [39169]: "jp",
+      [37584]: "es",
+      [36985]: "us",
+      [38715]: "us",
+      [38469]: "us",
+      [36850]: "us",
+      [37843]: "us",
+      [39455]: "eu",
+      [39435]: "eu",
     } as const;
 
     const seeds = {
-      DragonReX: "Seed 9 • AREA CUP Invitee #5",
-      "The Invincible Fleet Rei Maru": "Seed 1 • AREA CUP Invitee #1",
-      "False Dream": "Seed 3 • AREA CUP Invitee #2",
-      "Final Weapon": "Seed 15 • AREA CUP Invitee #8",
-      FreeFlow: "Seed 16 • SuperJump 5 #T-5 ",
-      Fruittella: "Seed 12 • SWS Qualifier 2 [W]",
-      FTWin: "Seed 6 • SWS Qualifier 1 [W]",
-      Hornet: "Seed 5 • AREA CUP Invitee #3",
-      "Milky Way": "Seed 4 • SuperJump 5 #2",
-      Moonlight: "Seed 8 • SWS Qualifier 1 [L]",
-      "New Meta": "Seed 14 • SWS Qualifier 2 [L]",
-      PxG: "Seed 2 • SuperJump 5 #1",
-      "Takoyaki Party": "Seed 7 • AREA CUP Invitee #4",
-      Hypernova: "Seed 10 • SuperJump 5 #4",
-      Utopia: "Seed 11 • AREA CUP Invitee #6",
-      "Samurai Cat": "Seed 13 • AREA CUP Invitee #7",
-      "Placeholder Team A": "Seed 16 • SuperJump 5 #T-5 ",
-      "Placeholder Team B": "Seed 1 • AREA CUP Invitee #1",
+      [38001]: "Seed 1 • AREA CUP Invitee #1",
+      [37584]: "Seed 2 • SuperJump 5 #1",
+      [37375]: "Seed 3 • AREA CUP Invitee #2",
+      [36985]: "Seed 4 • SuperJump 5 #2",
+      [39243]: "Seed 5 • AREA CUP Invitee #3",
+      [38715]: "Seed 6 • SWS Qualifier 1 [W]",
+      [37135]: "Seed 7 • AREA CUP Invitee #4",
+      [38469]: "Seed 8 • SWS Qualifier 1 [L]",
+      [36331]: "Seed 9 • AREA CUP Invitee #5",
+      [36850]: "Seed 10 • SuperJump 5 #4",
+      [39244]: "Seed 11 • AREA CUP Invitee #6",
+      [39435]: "Seed 12 • SWS Qualifier 2 [W]",
+      [38264]: "Seed 13 • AREA CUP Invitee #7",
+      [39455]: "Seed 14 • SWS Qualifier 2 [L]",
+      [39169]: "Seed 15 • AREA CUP Invitee #8",
+      [37843]: "Seed 16 • SuperJump 5 #T-5 ",
     } as const;
 
     return {
@@ -533,16 +531,16 @@ export default defineComponent({
       teamBName,
       games,
       teamASeed: computed(() => {
-        return seeds[teamAName.value as keyof typeof seeds];
+        return seeds[teamA.value.id as keyof typeof seeds];
       }),
       teamBSeed: computed(() => {
-        return seeds[teamBName.value as keyof typeof seeds];
+        return seeds[teamB.value.id as keyof typeof seeds];
       }),
       teamAFlag: computed(
         () =>
           flags[
             teamFlags[
-              teamA.value.name as keyof typeof teamFlags
+              teamA.value.id as keyof typeof teamFlags
             ] as keyof typeof flags
           ]
       ),
@@ -550,7 +548,7 @@ export default defineComponent({
         () =>
           flags[
             teamFlags[
-              teamB.value.name as keyof typeof teamFlags
+              teamB.value.id as keyof typeof teamFlags
             ] as keyof typeof flags
           ]
       ),

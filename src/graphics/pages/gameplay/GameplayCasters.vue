@@ -113,7 +113,7 @@ function castersLeave(elem: HTMLElement, done: gsap.Callback) {
 
 .gameplay-casters {
     position: absolute;
-    bottom: 30px;
+    top: 30px;
     right: 30px;
     width: 300px;
 }
@@ -122,10 +122,12 @@ function castersLeave(elem: HTMLElement, done: gsap.Callback) {
     @include font-mixins.font-barlow-condensed;
 
     z-index: 2;
-    background-color: rgba(12, 12, 12, 0.9);
+    background-color: #10011b;
     color: #fff;
-    font-size: 28px;
-    line-height: 36px;
+    border-radius: 4px;
+    border: 1px solid white;
+    font-size: 20px;
+    font-family: Blinker;
     width: 100%;
     text-align: center;
     padding: 4px 0;
@@ -133,8 +135,10 @@ function castersLeave(elem: HTMLElement, done: gsap.Callback) {
 
 .caster-details {
     box-sizing: border-box;
-    background-color: #222;
+    background-color: #10011b;
     width: 100%;
+    border-radius: 4px;
+    border: 1px solid white;
     color: white;
     margin-top: 8px;
 }
@@ -142,23 +146,22 @@ function castersLeave(elem: HTMLElement, done: gsap.Callback) {
 .caster-name {
     @include font-mixins.font-anton;
     text-transform: uppercase;
-    font-size: 45px;
-    background: constants.$accent-gradient;
-    padding: 0 16px;
+    font-size: 28px;
+    background: #21102d;
+    font-weight: 100;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 62px;
+    height: 54px;
 }
 
 .caster-social {
     @include font-mixins.font-barlow-condensed;
-    font-size: 28px;
-    line-height: 34px;
+    font-size: 20px;
     font-weight: 400;
-    margin-top: -3px;
     padding: 4px 8px;
+    margin-bottom: 4px;
     text-align: center;
     display: flex;
     align-items: center;
@@ -176,10 +179,11 @@ function castersLeave(elem: HTMLElement, done: gsap.Callback) {
     text-transform: uppercase;
     font-size: 20px;
     line-height: 20px;
-    background-color: #fff;
+    background: constants.$accent-gradient;
+    background-image: linear-gradient(to right, #c467a9, #9b33ba);
     display: inline-block;
     transform: translateY(-1px);
-    color: #111;
+    color: white;
     padding: 0 4px 1px 4px;
     margin-top: 4px;
     margin-right: 8px;
