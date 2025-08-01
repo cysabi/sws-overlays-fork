@@ -40,16 +40,16 @@
 
         <select class="dropdown" v-model="playerA">
             <option disabled value="">Team A: {{ dataStore.activeRound.teamA.name }}</option>
-            <option v-for="[team, val] in teamA" :key="team" :value="val">{{ team }}</option>
+            <option v-for="[team, val] in teamA" :key="val" :value="val">{{ team }}</option>
             <option disabled value="">Team B: {{ dataStore.activeRound.teamB.name }}</option>
-            <option v-for="[team, val] in teamB" :key="team" :value="val">{{ team }}</option>
+            <option v-for="[team, val] in teamB" :key="val" :value="val">{{ team }}</option>
         </select>
 
         <select class="dropdown" v-model="playerB">
             <option disabled value="">Team A: {{ dataStore.activeRound.teamA.name }}</option>
-            <option v-for="[team, val] in teamA" :key="team" :value="val">{{ team }}</option>
+            <option v-for="[team, val] in teamA" :key="val" :value="val">{{ team }}</option>
             <option disabled value="">Team B: {{ dataStore.activeRound.teamB.name }}</option>
-            <option v-for="[team, val] in teamB" :key="team" :value="val">{{ team }}</option>
+            <option v-for="[team, val] in teamB" :key="val" :value="val">{{ team }}</option>
         </select>
 
         <ipl-button
@@ -151,18 +151,20 @@ function updateStatistics() {
 async function importSheet(rawUrl: string, cols: number): Promise<Record<string, string>[] | undefined> {
     if (rawUrl === '') return undefined
 
-    const downloadUrl = rawUrl.replace('/edit', '/export').replace(/#.*$/, '') + '&format=csv'
+    const downloadUrl = rawUrl.replace('/edit', '/export').replace(/#.*$/, '') + '&format=tsv'
     console.log(downloadUrl)
 
     const contents = await fetch(downloadUrl, { method: "GET" })
         .then((res) => res.text())
 
     const rows = contents.split('\n')
-        .map((line) => line.split(','))
+        .map((line) => line.split('\t'))
         .filter((cells) => !!cells[1])
         .map((cells) => cells.slice(0, cols))
 
     const header = rows.shift()!
+
+    console.log(header)
 
     const data = rows.map((row) => {
         const obj: any = {}
