@@ -11,6 +11,7 @@ const database = nodecg.Replicant<Record<string, string>[]>("statsDatabase", {
 
 const playerA = nodecg.Replicant<string>("statsPlayerA", { defaultValue: "" });
 const playerB = nodecg.Replicant<string>("statsPlayerB", { defaultValue: "" });
+const jpMode = nodecg.Replicant<boolean>("statsJP", { defaultValue: false });
 
 const selectedStats = nodecg.Replicant<[string, string, string]>(
   "statsSelected",
@@ -23,6 +24,7 @@ interface StatsStore {
   statsPlayerA: string;
   statsPlayerB: string;
   statsSelected: [string, string, string];
+  statsJP: boolean;
 }
 
 export const useStatsStore = defineStore("statistics", {
@@ -32,6 +34,7 @@ export const useStatsStore = defineStore("statistics", {
     statsPlayerA: "",
     statsPlayerB: "",
     statsSelected: [] as unknown as [string, string, string],
+    statsJP: false,
   }),
   actions: {
     setStatsData(newValue: Record<string, string>[]) {
@@ -50,10 +53,13 @@ export const useStatsStore = defineStore("statistics", {
     setSelectedStats(newValue: [string, string, string]) {
       selectedStats.value = newValue;
     },
+    setJP(newValue: boolean) {
+      jpMode.value = newValue;
+    },
   },
 });
 
 export const initStatsStore = createReplicantStoreInitializer(
-  [data, database, playerA, playerB, selectedStats],
+  [data, database, playerA, playerB, selectedStats, jpMode],
   useStatsStore,
 );
