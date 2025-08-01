@@ -3,37 +3,43 @@
       <div class="large-container">
       <div class="team-bar">
         <div class="team-display bg-left">
-          <img :src="getFlagUrl(a.Country)" class="float-left">
-          <div class="text left">{{ displayTeam(a.Team) }}</div>
+          <img :src="a.Flag" class="float-left">
+          <div class="text left">{{ displayTeam(a) }}</div>
         </div>
         <div class="event-logo">
           <event-logo />
         </div>
         <div class="team-display bg-right">
-          <img :src="getFlagUrl(b.Country)" class="float-right">
-          <div class="text right">{{ displayTeam(b.Team) }}</div>
+          <img :src="b.Flag" class="float-right">
+          <div class="text right">{{ displayTeam(b) }}</div>
         </div>
       </div>
       <div class="info-container">
         <div class="player-container">
-          <div class="player-name-box">
+          <div class="player-name-box bg-left-ov">
             <div class="accent"></div>
             <br />
-            <div class="text">{{ a.Player.toUpperCase() }}</div>
-            <div class="subtext">{{ a.Role.toUpperCase() }}</div>
+            <div class="text">{{ displayName(a) }}</div>
+            <div class="subtext">{{ a.Role }}</div>
           </div>
           <div class="player-build-row">
             <span class="build-text float-left">BUILD</span>
             <div class="player-rating-box float-right">
-              <div class="text">{{ a['X Power'] }}</div>
+              <div class="text">{{ a.XP }}</div>
               <div class="accent bg-left">
-                <div class="label">X Power</div>
+                <div class="label">
+                  X POWER
+                  <img :src="a.Region" />
+                </div>
               </div>
             </div>
           </div>
           <div class="player-loadout-box">
-            <img :src="getMainWeapon(a)['Weapon Image']" />
-            <div>{{ getMainWeapon(a).Name }}</div>
+            <div class="container" style="float: left;">
+              <img :src="getMainWeapon(a)['Weapon Image']" />
+              <div class="text">{{ getMainWeapon(a).Name }}</div>
+            </div>
+            <img class="build-image" :src="a['Build Link']">
           </div>
           <div class="player-additional-row">
             <div class="player-special-box with-margin bg-left" >
@@ -64,24 +70,30 @@
           </div>
         </div>
         <div class="player-container">
-          <div class="player-name-box">
+          <div class="player-name-box bg-right-ov">
             <div class="accent-right"></div>
             <br />
-            <div class="text ta-right">{{ b.Player.toUpperCase() }}</div>
-            <div class="subtext ta-right">{{ b.Role.toUpperCase() }}</div>
+            <div class="text ta-right">{{ displayName(b) }}</div>
+            <div class="subtext ta-right">{{ b.Role }}</div>
           </div>
           <div class="player-build-row">
             <div class="player-rating-box float-left">
-              <div class="text">{{ b['X Power'] }}</div>
+              <div class="text">{{ b.XP }}</div>
               <div class="accent bg-left">
-                <div class="label">X POWER</div>
+                <div class="label">
+                  X POWER
+                  <img :src="b.Region" />
+                </div>
               </div>
             </div>
             <span class="build-text float-right">BUILD</span>
           </div>
           <div class="player-loadout-box">
-            <img :src="getMainWeapon(b)['Weapon Image']" />
-            <div>{{ getMainWeapon(b).Name }}</div>
+            <div class="container" style="float: left;">
+              <img :src="getMainWeapon(b)['Weapon Image']" />
+              <div class="text">{{ getMainWeapon(b).Name }}</div>
+            </div>
+            <img class="build-image" :src="b['Build Link']">
           </div>
           <div class="player-additional-row">
             <div class="player-special-box with-margin bg-left" >
@@ -104,6 +116,7 @@
 import MazeBackground from 'components/MazeBackground.vue';
 import CasterGrid from 'components/CasterGrid.vue';
 import { useStatsStore } from 'browser-shared/stores/StatsStore';
+import { useTournamentDataStore } from 'browser-shared/stores/TournamentDataStore';
 import EventLogo from 'components/EventLogo.vue';
 import FittedContent from 'components/FittedContent.vue';
 import OpacitySwapTransition from 'components/OpacitySwapTransition.vue';
@@ -111,12 +124,16 @@ import VideoLoader from 'components/VideoLoader.vue';
 import { computed } from 'vue';
 
 const statsStore = useStatsStore();
+const dataStore = useTournamentDataStore();
 const bundleName = nodecg.bundleName;
 
 const a = computed(() => statsStore.statsData.find(d => d.Player === statsStore.statsPlayerA)!)
 const b = computed(() => statsStore.statsData.find(d => d.Player === statsStore.statsPlayerB)!)
 
-function displayTeam(name: string): string {
+function displayTeam(team: Record<string, string>): string {
+  const id = team['Team ID']
+  const name = dataStore.tournamentData.teams.find((team: any) => team.id === id)?.name ?? team.Team
+
   if (!name) return 'UNNAMED'
   const up = name.toUpperCase();
   return up.includes('INVINCIBLE FLEET') ? 'INVINCIBLE FLEET' : up;
@@ -132,13 +149,14 @@ function getMainWeapon(player: Record<string, string>): Record<string, string> {
   )!
 }
 
-function getFlagUrl(flag: string) {
-  return {
-    'US': 'https://iili.io/F8x2mxe.png',
-    'JP': 'https://iili.io/F8x2Db9.png',
-    'EU': 'https://iili.io/F8x2yib.png',
-    'EU/US': 'https://iili.io/F8x2pWu.png',
-  }[flag]
+function displayName(player: Record<stirng, string>): string {
+  if (player['Alt Name'] && player['Alt Name'] !== '')
+    return player['Alt Name'].toUpperCase()
+
+  if (statsStore.statsJP && player.JP && player.JP !== '')
+    return player.JP.toUpperCase()
+
+  return player.Player.toUpperCase()
 }
 </script>
 
@@ -278,10 +296,22 @@ body {
     flex-wrap: wrap;
 }
 
+.bg-left-ov {
+      background: rgb(16, 1, 27) url('../../assets/pattern-halftone-top_2_1.png');
+      background-position: 100% 100%;
+      background-repeat: no-repeat;
+    }
+
+.bg-right-ov {
+      background: rgb(16, 1, 27) url('../../assets/pattern-halftone-top_2_2.png');
+      background-position: 0% 100%;
+      background-repeat: no-repeat;
+}
+
 .player-name-box {
     width: 100%;
     height: 170px;
-    background: rgb(16, 1, 27);
+    // background: rgb(16, 1, 27);
     flex-direction: row;
     margin-bottom: 35px;
 
@@ -304,15 +334,19 @@ body {
     }
 
     .text {
+        margin-top: -10px;
         width: calc(100% - 26px);
-        font-size: 52px;
+        font-size: 70px;
+        height: 90px;
         color: white;
     }
 
     .subtext {
         font-size: 32px;
         color: white;
-        @include font-mixins.font-blinker;
+        font-family: 'Blinker';
+        height: 60px;
+        // @include font-mixins.font-blinker;
     }
 }
 
@@ -351,6 +385,13 @@ body {
         float: left;
     }
 
+    img {
+        margin-left: 10px;
+        height: 64px;
+        position: relative;
+        top: 19px;
+    }
+
     .text {
         text-align: center;
         height: calc(160px - 46px);
@@ -359,6 +400,8 @@ body {
     }
 
     .label {
+        position: relative;
+        top: -28px;
         font-size: 30px;
         color: white;
         text-align: center;
@@ -371,17 +414,39 @@ body {
     background: rgb(16, 1, 27);
     margin-bottom: 30px;
     color: white;
-    font-size: 32px;
+    font-size: 24px;
+    @include font-mixins.font-blinker;
 
-    div {
+    .container {
+        width: 190px;
         margin-left: 20px;
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .text {
+        height: 40px;
+        line-height: 20px;
+        vertical-align: middle;
+        text-align: center;
+        align-content: center;
     }
 
     img {
-        padding-top: 20px;
-        padding-bottom: 5px;
-        margin-left: 20px;
-        width: 110px;
+        padding-top: 15px;
+        // margin-left: 20px;
+        width: 120px;
+    }
+
+    .build-image {
+        float: right;
+        position: relative;
+        z-index: 2;
+        margin-right: 20px;
+        // height: calc(100% - 16px - 16px);
+        width: 400px;
+        padding-top: 36px;
+        // padding-bottom: 16px;
     }
 }
 
@@ -404,21 +469,23 @@ body {
     float: left;
 
     .icon {
-      height: 48px;
-      margin-left: 30px;
-      margin-top: 16px;
-      margin-bottom: 16px;
+      height: 64px;
+      margin-left: 10px;
+      margin-top: 8px;
+      margin-bottom: 8px;
       float: left;
     }
 
     .text {
         float: left;
         width: calc(300px - 48px - 30px);
-        padding-top: 16px;
+        padding-top: 20px;
         color: white;
         font-size: 32px;
         text-align: center;
         vertical-align: middle;
+
+        @include font-mixins.font-blinker;
     }
 }
 
