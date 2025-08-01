@@ -169,8 +169,15 @@ async function importSheet(rawUrl: string, cols: number): Promise<Record<string,
     const data = rows.map((row) => {
         const obj: any = {}
         for (let i = 0; i < header.length; i++)
-            if (header[i] !== '')
+            if (header[i] !== '') {
                 obj[header[i]] = row[i]
+
+                if (header[i] ==='Weapons') {
+                    const str = row[i]
+                    const first = str.split(', ').shift()!
+                    obj.Weapon = first.replace(/^Vanilla /, '')
+                }
+            }
         return obj
     })
 
